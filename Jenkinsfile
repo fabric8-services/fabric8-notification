@@ -29,9 +29,7 @@ goTemplate{
       }
 
       stage('archive') {
-        steps {
-          junit '**/tmp/junit.xml'
-        }
+        junit '**/tmp/junit.xml'
       }
     }
     if (utils.isCD()){
