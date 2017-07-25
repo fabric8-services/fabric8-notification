@@ -16,7 +16,8 @@ goTemplate{
           dockerBuildOptions = '--file Dockerfile.deploy'
           makeTarget = 'build test-unit-no-coverage-junit'
         }
-        step([$class: 'JUnitResultArchiver', testResults: '**/tmp/junit.xml', healthScaleFactor: 1.0])
+        step([$class: 'JUnitResultArchiver', testResults: '/home/jenkins/go/src/github.com/fabric8-services/fabric8-notification/tmp/junit.xml', healthScaleFactor: 1.0])
+        
       } else if (utils.isCD()){
         def v = goRelease{
           githubOrganisation = 'fabric8-services'
