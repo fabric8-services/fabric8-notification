@@ -28,11 +28,9 @@ goTemplate{
         initServiceGitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).toString().trim()
       }
 
-      post {
-          always {
-            junit '**/tmp/junit.xml'
-          }
-      }       
+      always {
+        junit '**/tmp/junit.xml'
+      }
     }
     if (utils.isCD()){
       ws{
