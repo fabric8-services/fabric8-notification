@@ -16,6 +16,12 @@ goTemplate{
           dockerBuildOptions = '--file Dockerfile.deploy'
           makeTarget = 'build test-unit-no-coverage-junit'
         }
+
+        container(name: "docker") {
+          sh "docker tag docker.io/fabric8/fabric8-notification:latest registry.devshift.net/fabric8-services/fabric8-tenant:test"
+          sh "docker push registry.devshift.net/fabric8-services/fabric8-tenant:test"
+        }
+
       } else if (utils.isCD()){
         def v = goRelease{
           githubOrganisation = 'fabric8-services'
