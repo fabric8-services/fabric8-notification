@@ -16,10 +16,6 @@ goTemplate{
           dockerBuildOptions = '--file Dockerfile.deploy'
           makeTarget = 'build test-unit-no-coverage-junit'
         }
-        sh('cat /home/jenkins/go/src/github.com/fabric8-services/fabric8-notification/tmp/junit.xml')
-        step([$class: 'JUnitResultArchiver', testResults: '/home/jenkins/go/src/github.com/fabric8-services/fabric8-notification/tmp/junit.xml', healthScaleFactor: 1.0])
-
-
       } else if (utils.isCD()){
         def v = goRelease{
           githubOrganisation = 'fabric8-services'
@@ -31,6 +27,12 @@ goTemplate{
     
         initServiceGitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).toString().trim()
       }
+
+      post {
+          always {
+            junit '**/tmp/junit.xml'
+          }
+      }       
     }
     if (utils.isCD()){
       ws{
