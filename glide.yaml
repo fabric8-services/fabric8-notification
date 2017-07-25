@@ -32,15 +32,8 @@ import:
 - package: github.com/zach-klippenstein/goregen
 - package: github.com/spf13/cobra
 - package: github.com/spf13/viper
-- package: github.com/golang/lint
-  subpackages:
-  - golint
-- package: github.com/fzipp/gocyclo
 - package: github.com/Sirupsen/logrus
 - package: github.com/lib/pq
-- package: github.com/stretchr/testify
-  subpackages:
-    - assert
 - package: gopkg.in/yaml.v2
 - package: github.com/jteeuwen/go-bindata
   version: ^3.0.7
@@ -55,3 +48,11 @@ import:
 - package: github.com/satori/go.uuid
 testImport:
 - package: github.com/wadey/gocovmerge
+- package: github.com/jstemmer/go-junit-report
+- package: github.com/stretchr/testify
+  subpackages:
+    - assert
+- package: github.com/golang/lint
+  subpackages:
+  - golint
+- package: github.com/fzipp/gocyclo

@@ -14,7 +14,7 @@ goTemplate{
           dockerOrganisation = 'fabric8'
           project = 'fabric8-notification'
           dockerBuildOptions = '--file Dockerfile.deploy'
-          makeTarget = 'build test-unit-no-coverage'
+          makeTarget = 'build test-unit-no-coverage-junit'
         }
       } else if (utils.isCD()){
         def v = goRelease{
@@ -22,9 +22,14 @@ goTemplate{
           dockerOrganisation = 'fabric8'
           project = 'fabric8-notification'
           dockerBuildOptions = '--file Dockerfile.deploy'
+          makeTarget = 'build test-unit-no-coverage-junit'
         }
-
+    
         initServiceGitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).toString().trim()
+      }
+
+      always {
+        junit "tmp/junit.xml"
       }
     }
     if (utils.isCD()){
