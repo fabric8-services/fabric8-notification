@@ -28,7 +28,6 @@ goTemplate{
         initServiceGitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).toString().trim()
       }
 
-      sh('pwd')
       sh('mv /home/jenkins/go/src/github.com/fabric8-services/fabric8-notification/tmp/junit.xml `pwd`')
       junit 'junit.xml'
 

@@ -39,7 +39,7 @@ func TestWorkItem(t *testing.T) {
 	assert.NotNil(t, vars["space"])
 	assert.NotNil(t, vars["spaceOwner"])
 
-	assert.True(t, len(users) > 10)
+	assert.True(t, len(users) > 100)
 
 	/*
 		for _, u := range users {

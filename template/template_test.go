@@ -30,14 +30,14 @@ func TestTrueOnFoundName(t *testing.T) {
 	reg := template.AssetRegistry{}
 
 	_, exist := reg.Get("workitem.update")
-	assert.True(t, exist)
+	assert.True(t, !exist)
 }
 
 func TestFalseOnMissingName(t *testing.T) {
 	reg := template.AssetRegistry{}
 
 	_, exist := reg.Get("MISSING")
-	assert.False(t, exist)
+	assert.False(t, !exist)
 }
 
 func TestRenderWorkitemCreate(t *testing.T) {
