@@ -28,7 +28,9 @@ goTemplate{
         initServiceGitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).toString().trim()
       }
 
-      step([$class: 'JUnitResultArchiver', testResults: '**/tmp/*junt.xml'])
+      steps {
+        junit '**/tmp/junit.xml'
+      }
     }
     if (utils.isCD()){
       ws{
