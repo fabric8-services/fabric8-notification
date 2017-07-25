@@ -27,10 +27,6 @@ goTemplate{
     
         initServiceGitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).toString().trim()
       }
-
-      stage('archive') {
-        junit '**/tmp/junit.xml'
-      }
     }
     if (utils.isCD()){
       ws{
@@ -62,4 +58,9 @@ goTemplate{
       }
     }
   }
+}
+always {
+  sh('pwd')
+  sh('cat /home/jenkins/go/src/github.com/fabric8-services/fabric8-notification/tmp/junit.xml')
+  junit '**/tmp/junit.xml'
 }
