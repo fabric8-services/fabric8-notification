@@ -14,7 +14,7 @@ goTemplate{
           dockerOrganisation = 'fabric8'
           project = 'fabric8-notification'
           dockerBuildOptions = '--file Dockerfile.deploy'
-          makeTarget = 'test-unit-no-coverage'
+          makeTarget = 'build test-unit-no-coverage'
         }
       } else if (utils.isCD()){
         def v = goRelease{
