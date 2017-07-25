@@ -9,7 +9,7 @@ goTemplate{
       checkout scm
 
       if (utils.isCI()){
-        goCI{
+        def v = goCI{
           githubOrganisation = 'fabric8-services'
           dockerOrganisation = 'fabric8'
           project = 'fabric8-notification'
@@ -18,7 +18,7 @@ goTemplate{
         }
 
         container(name: "docker") {
-          sh "docker tag docker.io/fabric8/fabric8-notification:latest registry.devshift.net/fabric8-services/fabric8-tenant:test"
+          sh "docker tag docker.io/fabric8/fabric8-notification:${v} registry.devshift.net/fabric8-services/fabric8-tenant:test"
           sh "docker push registry.devshift.net/fabric8-services/fabric8-tenant:test"
         }
 
