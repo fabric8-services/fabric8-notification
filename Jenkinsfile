@@ -28,8 +28,10 @@ goTemplate{
         initServiceGitHash = sh(script: 'git rev-parse HEAD', returnStdout: true).toString().trim()
       }
 
-      steps {
-        junit '**/tmp/junit.xml'
+      stage('archive') {
+        steps {
+          junit '**/tmp/junit.xml'
+        }
       }
     }
     if (utils.isCD()){
