@@ -9,14 +9,15 @@ import (
 	"github.com/fabric8-services/fabric8-notification/controller"
 	"github.com/fabric8-services/fabric8-notification/email"
 	"github.com/fabric8-services/fabric8-notification/jsonapi"
+	"github.com/fabric8-services/fabric8-notification/keycloak"
 	"github.com/fabric8-services/fabric8-notification/template"
 	"github.com/fabric8-services/fabric8-notification/wit"
-	//"github.com/fabric8-services/fabric8-notification/keycloak"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/fabric8-services/fabric8-wit/log"
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
+	goajwt "github.com/goadesign/goa/middleware/security/jwt"
 	"github.com/goadesign/goa/middleware/gzip"
 
 	goalogrus "github.com/goadesign/goa/logging/logrus"
@@ -35,25 +36,17 @@ func main() {
 	// Initialized developer mode flag for the logger
 	log.InitializeLogger(config.IsLogJSON(), config.GetLogLevel())
 
-	/*
-		keycloakConfig := keycloak.Config{
-			BaseURL: config.GetKeycloakURL(),
-			Realm:   config.GetKeycloakRealm(),
-			Broker:  config.GetKeycloakOpenshiftBroker(),
-		}
+	keycloakConfig := keycloak.Config{
+		BaseURL: config.GetKeycloakURL(),
+		Realm:   config.GetKeycloakRealm(),
+	}
 
-		templateVars, err := config.GetTemplateValues()
-		if err != nil {
-			panic(err)
-		}
-
-		publicKey, err := keycloak.GetPublicKey(keycloakConfig)
-		if err != nil {
-			log.Panic(nil, map[string]interface{}{
-				"err": err,
-			}, "failed to parse public token")
-		}
-	*/
+	publicKey, err := keycloak.GetPublicKey(keycloakConfig)
+	if err != nil {
+		log.Panic(nil, map[string]interface{}{
+			"err": err,
+		}, "failed to parse public token")
+	}
 
 	err = config.Validate()
 	if err != nil {
@@ -95,7 +88,7 @@ func main() {
 	service.Use(jsonapi.ErrorHandler(service, true))
 	service.Use(middleware.Recover())
 	service.WithLogger(goalogrus.New(log.Logger()))
-	//app.UseJWTMiddleware(service, goajwt.New(publicKey, nil, app.NewJWTSecurity()))
+	app.UseJWTMiddleware(service, goajwt.New(publicKey, nil, app.NewJWTSecurity()))
 
 	// Mount "status" controller
 	statusCtrl := controller.NewStatusController(service)

@@ -45,6 +45,16 @@ objects:
               configMapKeyRef:
                 name: f8notification
                 key: wit.api
+          - name: F8_KEYCLOAK_URL
+            valueFrom:
+              configMapKeyRef:
+                name: f8notification
+                key: keycloak.url
+          - name: F8_KEYCLOAK_REALM
+            valueFrom:
+              configMapKeyRef:
+                name: f8notification
+                key: keycloak_realm
           image: docker.io/fabric8io/fabric8-notification:${IMAGE_TAG}
           imagePullPolicy: Always
           name: f8notification

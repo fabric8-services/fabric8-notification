@@ -37,7 +37,7 @@ var notificationSingle = JSONSingle(
 var _ = a.Resource("notify", func() {
 	a.BasePath("/notify")
 	a.Action("send", func() {
-		//a.Security("jwt")
+		a.Security("jwt")
 		a.Routing(
 			a.POST(""),
 		)
