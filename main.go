@@ -17,8 +17,8 @@ import (
 	"github.com/fabric8-services/fabric8-wit/log"
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
-	goajwt "github.com/goadesign/goa/middleware/security/jwt"
 	"github.com/goadesign/goa/middleware/gzip"
+	goajwt "github.com/goadesign/goa/middleware/security/jwt"
 
 	goalogrus "github.com/goadesign/goa/logging/logrus"
 )
