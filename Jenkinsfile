@@ -17,11 +17,12 @@ goTemplate{
           makeTarget = 'build test-unit-no-coverage-junit'
         }
 
+  /*
         container(name: "docker") {
           sh "docker tag docker.io/fabric8/fabric8-notification:${v} registry.devshift.net/fabric8-services/fabric8-notification:test"
           sh "docker push registry.devshift.net/fabric8-services/fabric8-notification:test"
         }
-
+*/
       } else if (utils.isCD()){
         def v = goRelease{
           githubOrganisation = 'fabric8-services'
