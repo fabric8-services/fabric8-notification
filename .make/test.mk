@@ -143,7 +143,8 @@ test-unit-no-coverage: prebuild-check $(SOURCES)
 
 .PHONY: test-unit-no-coverage-junit
 test-unit-no-coverage-junit: prebuild-check ${GO_JUNIT_BIN} ${TMP_PATH}
-	bash -c "make test-unit-no-coverage 2>&1 | tee >(${GO_JUNIT_BIN} > ${TMP_PATH}/junit.xml)"
+	bash -c "set -o pipefail; make test-unit-no-coverage 2>&1 | tee >(${GO_JUNIT_BIN} > ${TMP_PATH}/junit.xml)"
+	
 
 .PHONY: test-integration
 ## Runs the integration tests and produces coverage files for each package.

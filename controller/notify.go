@@ -37,7 +37,7 @@ func (c *NotifyController) Send(ctx *app.SendNotifyContext) error {
 
 	if template, found = c.TemplateRegistry.Get(nType); !found {
 		log.Error(ctx, map[string]interface{}{
-			"err":  "Template type not found",
+			"err":  "template type not found",
 			"type": nType,
 			"id":   nID,
 		}, "resource requested")
@@ -49,7 +49,7 @@ func (c *NotifyController) Send(ctx *app.SendNotifyContext) error {
 			"type": nType,
 			"id":   nID,
 		}, "resource requested")
-		return jsonapi.JSONErrorResponse(ctx, errors.NewInternalError(ctx, fmt.Errorf("Could not find ReceiverResolver for type %v", nType)))
+		return jsonapi.JSONErrorResponse(ctx, errors.NewInternalError(ctx, fmt.Errorf("could not find ReceiverResolver for type %v", nType)))
 	}
 
 	c.Notifier.Send(ctx, email.Notification{ID: nID, Type: nType, Resolver: receiverResolver, Template: template})

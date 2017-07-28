@@ -37,7 +37,7 @@ func GetUser(ctx context.Context, client *api.Client, uID uuid.UUID) (*api.User,
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("Non %v status code for %v, returned %v", http.StatusOK, "GET user", resp.StatusCode)
+		return nil, fmt.Errorf("non %v status code for %v, returned %v", http.StatusOK, "GET user", resp.StatusCode)
 	}
 
 	if err != nil {
@@ -47,14 +47,13 @@ func GetUser(ctx context.Context, client *api.Client, uID uuid.UUID) (*api.User,
 }
 
 func GetWorkItem(ctx context.Context, client *api.Client, wiID uuid.UUID) (*api.WorkItemSingle, error) {
-	spaceID, _ := uuid.FromString("020f756e-b51a-4b43-b113-45cec16b9ce9")
-	resp, err := client.ShowWorkitem(goasupport.ForwardContextRequestID(ctx), api.ShowWorkitemPath(spaceID, wiID), nil, nil)
+	resp, err := client.ShowWorkitem(goasupport.ForwardContextRequestID(ctx), api.ShowWorkitemPath(wiID), nil, nil)
 	if resp != nil {
 		defer resp.Body.Close()
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("Non %v status code for %v, returned %v", http.StatusOK, "GET workitem", resp.StatusCode)
+		return nil, fmt.Errorf("non %v status code for %v, returned %v", http.StatusOK, "GET workitem", resp.StatusCode)
 	}
 
 	if err != nil {
@@ -70,7 +69,7 @@ func GetWorkItemType(ctx context.Context, client *api.Client, spaceID, witID uui
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("Non %v status code for %v, returned %v", http.StatusOK, "GET workitemtype", resp.StatusCode)
+		return nil, fmt.Errorf("non %v status code for %v, returned %v", http.StatusOK, "GET workitemtype", resp.StatusCode)
 	}
 
 	if err != nil {
@@ -86,7 +85,7 @@ func GetComment(ctx context.Context, client *api.Client, cID uuid.UUID) (*api.Co
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("Non %v status code for %v, returned %v", http.StatusOK, "GET comment", resp.StatusCode)
+		return nil, fmt.Errorf("non %v status code for %v, returned %v", http.StatusOK, "GET comment", resp.StatusCode)
 	}
 
 	if err != nil {
@@ -99,14 +98,13 @@ func GetComments(ctx context.Context, client *api.Client, wiID uuid.UUID) (*api.
 	pageLimit := 100
 	pageOffset := "0"
 
-	spaceID, _ := uuid.FromString("020f756e-b51a-4b43-b113-45cec16b9ce9")
-	resp, err := client.ListWorkItemComments(goasupport.ForwardContextRequestID(ctx), api.ListWorkItemCommentsPath(spaceID, wiID), &pageLimit, &pageOffset, nil, nil)
+	resp, err := client.ListWorkItemComments(goasupport.ForwardContextRequestID(ctx), api.ListWorkItemCommentsPath(wiID), &pageLimit, &pageOffset, nil, nil)
 	if resp != nil {
 		defer resp.Body.Close()
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("Non %v status code for %v, returned %v", http.StatusOK, "GET comments", resp.StatusCode)
+		return nil, fmt.Errorf("non %v status code for %v, returned %v", http.StatusOK, "GET comments", resp.StatusCode)
 	}
 
 	if err != nil {
@@ -122,7 +120,7 @@ func GetSpace(ctx context.Context, client *api.Client, spaceID uuid.UUID) (*api.
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("Non %v status code for %v, returned %v", http.StatusOK, "GET space", resp.StatusCode)
+		return nil, fmt.Errorf("non %v status code for %v, returned %v", http.StatusOK, "GET space", resp.StatusCode)
 	}
 
 	if err != nil {
@@ -140,7 +138,7 @@ func GetSpaceCollaborators(ctx context.Context, client *api.Client, spaceID uuid
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("Non %v status code for %v, returned %v", http.StatusOK, "GET collaborators", resp.StatusCode)
+		return nil, fmt.Errorf("non %v status code for %v, returned %v", http.StatusOK, "GET collaborators", resp.StatusCode)
 	}
 
 	if err != nil {

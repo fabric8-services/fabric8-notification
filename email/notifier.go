@@ -60,7 +60,7 @@ func (a *AsyncWorkerNotifier) work() {
 		log.Debug(task.context, map[string]interface{}{
 			"type": task.notification.ID,
 			"id":   task.notification.Type,
-		}, "Working on new notificaiton send of notification")
+		}, "working on new notificaiton send of notification")
 
 		a.do(task)
 
@@ -76,7 +76,7 @@ func (a *AsyncWorkerNotifier) do(cn contextualNotification) {
 			"type": notification.ID,
 			"id":   notification.Type,
 			"err":  err,
-		}, "Failed to resolve receivers")
+		}, "failed to resolve receivers")
 
 		return
 	}
@@ -86,7 +86,7 @@ func (a *AsyncWorkerNotifier) do(cn contextualNotification) {
 			"type": notification.ID,
 			"id":   notification.Type,
 			"err":  err,
-		}, "Failed to render template")
+		}, "failed to render template")
 
 		return
 	}
@@ -99,5 +99,5 @@ func (a *AsyncWorkerNotifier) Send(ctx context.Context, notification Notificatio
 	log.Debug(ctx, map[string]interface{}{
 		"type": notification.ID,
 		"id":   notification.Type,
-	}, "Scheduled send of notification")
+	}, "scheduled send of notification")
 }

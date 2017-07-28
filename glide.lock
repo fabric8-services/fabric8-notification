@@ -1,5 +1,5 @@
-hash: 9fc9c8d20d8eb05f90d945bda6d7b33f10b637cac77204d42c2b195d572df8e7
-updated: 2017-07-25T16:16:15.562835494+02:00
+hash: de05d7c08273e65a267a2f508e3f2a1715ffba1b4fe780789aac4417c4d1ad7a
+updated: 2017-07-28T02:13:21.196952064+02:00
 imports:
 - name: github.com/armon/go-metrics
   version: 97c69685293dce4c0a2d0b19535179bbc976e4d2
@@ -14,7 +14,7 @@ imports:
   subpackages:
   - go-bindata-assetfs
 - name: github.com/fabric8-services/fabric8-wit
-  version: 0647db716e7d6997992969e4f67fb82419e6dc3e
+  version: 798fd4c2ce1f5db8a41efd0cddb2c8469ed16571
   subpackages:
   - configuration
   - design
@@ -124,6 +124,10 @@ testImports:
   version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
   subpackages:
   - spew
+- name: github.com/fabric8-services/fabric8-tenant
+  version: 869b06d634f744e3bb171982b54950989f260c34
+  subpackages:
+  - keycloak
 - name: github.com/fzipp/gocyclo
   version: 6acd4345c835499920e8426c7e4e8d7a34f1bb83
 - name: github.com/golang/lint

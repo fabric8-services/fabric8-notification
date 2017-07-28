@@ -64,7 +64,7 @@ func getPublicKey(url string) (*kcEnv, error) {
 	b := buf.Bytes()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("Unknown response:\n%v\n%v", *(*string)(unsafe.Pointer(&b)), string(rb))
+		return nil, fmt.Errorf("unknown response:\n%v\n%v", *(*string)(unsafe.Pointer(&b)), string(rb))
 	}
 
 	var u kcEnv

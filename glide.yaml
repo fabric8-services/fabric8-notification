@@ -2,6 +2,7 @@ package: github.com/fabric8-services/fabric8-notification
 license: Apache-2.0
 import:
 - package: github.com/fabric8-services/fabric8-wit
+  version: 798fd4c2ce1f5db8a41efd0cddb2c8469ed16571
   subpackages:
     - log
     - errors
@@ -9,6 +10,7 @@ import:
     - resource
     - jsonapi
     - design
+    - goasupport
 - package: github.com/gregjones/httpcache
 - package: github.com/mattbaird/gochimp
 - package: github.com/goadesign/goa

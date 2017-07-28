@@ -39,7 +39,7 @@ func (m *MandrillSender) Send(ctx context.Context, subject string, body string, 
 	if err != nil {
 		log.Error(ctx, map[string]interface{}{
 			"err": err,
-		}, "Error sending messages")
+		}, "error sending messages")
 	}
 	for _, resp := range resps {
 		if resp.Status != "sent" && resp.Status != "queued" {
@@ -48,14 +48,14 @@ func (m *MandrillSender) Send(ctx context.Context, subject string, body string, 
 				"receipient_id": resp.Id,
 				"status":        resp.Status,
 				"rejected":      resp.RejectedReason,
-			}, "Sent message failed")
+			}, "sent message failed")
 
 		} else {
 			log.Info(ctx, map[string]interface{}{
 				"receipient":    resp.Email,
 				"receipient_id": resp.Id,
 				"status":        resp.Status,
-			}, "Sent message")
+			}, "sent message")
 		}
 	}
 }

@@ -7,6 +7,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/fabric8-services/fabric8-notification/wit"
 	"github.com/fabric8-services/fabric8-notification/wit/api"
+	"github.com/fabric8-services/fabric8-wit/log"
 	goajwt "github.com/goadesign/goa/middleware/security/jwt"
 	"github.com/goadesign/goa/uuid"
 )
@@ -15,7 +16,7 @@ func NewCommentResolver(c *api.Client) ReceiverResolver {
 	return func(ctx context.Context, id string) ([]Receiver, map[string]interface{}, error) {
 		cID, err := uuid.FromString(id)
 		if err != nil {
-			return []Receiver{}, nil, fmt.Errorf("Could not lookup comment based on id %v", id)
+			return []Receiver{}, nil, fmt.Errorf("unable to lookup comment based on id %v", id)
 		}
 		return Comment(ctx, c, cID)
 	}
@@ -25,7 +26,7 @@ func NewWorkItemResolver(c *api.Client) ReceiverResolver {
 	return func(ctx context.Context, id string) ([]Receiver, map[string]interface{}, error) {
 		wID, err := uuid.FromString(id)
 		if err != nil {
-			return []Receiver{}, nil, fmt.Errorf("Could not lookup Workitem based on id %v", id)
+			return []Receiver{}, nil, fmt.Errorf("unable to lookup Workitem based on id %v", id)
 		}
 		return WorkItem(ctx, c, wID)
 	}
@@ -112,7 +113,7 @@ func Comment(ctx context.Context, c *api.Client, cID uuid.UUID) ([]Receiver, map
 	}
 
 	if len(errors) > 0 {
-		return resolved, values, multiError{Message: "Errors during notification resolving", Errors: errors}
+		return resolved, values, multiError{Message: "errors during notification resolving", Errors: errors}
 	}
 
 	return resolved, values, nil
@@ -184,7 +185,7 @@ func WorkItem(ctx context.Context, c *api.Client, wiID uuid.UUID) ([]Receiver, m
 	}
 
 	if len(errors) > 0 {
-		return resolved, values, multiError{Message: "Errors during notification resolving", Errors: errors}
+		return resolved, values, multiError{Message: "errors during notification resolving", Errors: errors}
 	}
 
 	return resolved, values, nil
@@ -208,15 +209,21 @@ func resolveAllUsers(ctx context.Context, c *api.Client, users []uuid.UUID, coll
 			}
 		}
 		if !found {
-			c, err := wit.GetUser(ctx, c, u)
+			usr, err := wit.GetUser(ctx, c, u)
 			if err == nil {
-				if c.Data.Attributes.Email != nil {
-					user := Receiver{EMail: *c.Data.Attributes.Email}
-					if c.Data.Attributes.FullName != nil {
-						user.FullName = *c.Data.Attributes.FullName
+				if usr.Data.Attributes.Email != nil {
+					user := Receiver{EMail: *usr.Data.Attributes.Email}
+					if usr.Data.Attributes.FullName != nil {
+						user.FullName = *usr.Data.Attributes.FullName
 					}
 					resolved = append(resolved, user)
 				}
+			} else {
+				log.Error(ctx, map[string]interface{}{
+					"err":     err,
+					"user_id": u,
+				}, "unable to lookup user")
+
 			}
 		}
 	}
@@ -288,34 +295,16 @@ func collectSpaceUsers(space *api.SpaceSingle) []uuid.UUID {
 }
 
 // SliceUniq removes duplicate values in given slice
-func SliceUniq(s []uuid.UUID) []uuid.UUID {
-	for i := 0; i < len(s); i++ {
-		for i2 := i + 1; i2 < len(s); i2++ {
-			if s[i] == s[i2] {
-				// delete
-				s = append(s[:i2], s[i2+1:]...)
-				i2--
-			}
+func SliceUniq(a []uuid.UUID) []uuid.UUID {
+	result := []uuid.UUID{}
+	seen := map[uuid.UUID]uuid.UUID{}
+	for _, val := range a {
+		if _, ok := seen[val]; !ok {
+			result = append(result, val)
+			seen[val] = val
 		}
 	}
-	return s
-}
-
-type multiError struct {
-	Message string
-	Errors  []error
-}
-
-func (m multiError) Error() string {
-	s := m.Message + "\n"
-	for _, err := range m.Errors {
-		s += fmt.Sprintf("%v\n", err)
-	}
-	return s
-}
-
-func (m *multiError) String() string {
-	return m.Error()
+	return result
 }
 
 // slightly missplaced.
