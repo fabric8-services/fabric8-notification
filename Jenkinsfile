@@ -37,8 +37,8 @@ goTemplate{
 
       sh('mv /home/jenkins/go/src/github.com/fabric8-services/fabric8-notification/tmp/junit.xml `pwd`')
       junit 'junit.xml'
-
     }
+/*
     if (utils.isCD()){
       ws{
         container(name: 'go') {
@@ -68,5 +68,6 @@ goTemplate{
         }
       }
     }
+*/    
   }
 }
