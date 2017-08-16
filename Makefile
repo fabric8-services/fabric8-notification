@@ -143,8 +143,8 @@ template/bindata.go: $(GO_BINDATA_BIN) $(wildcard template/*/*.html)
 
 .PHONY: template-debug
 template-debug: $(GO_BINDATA_BIN) $(wildcard template/*/*.html)
-	rm template/bindata.go
-	$(GO_BINDATA_BIN) \
+	@rm template/bindata.go
+	@$(GO_BINDATA_BIN) \
 		-o template/bindata.go \
 		-pkg template \
 		-prefix '' \

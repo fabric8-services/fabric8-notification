@@ -40,7 +40,7 @@ func main() {
 	testdata = append(testdata, data{"51d968b1-b9e5-4ec1-884a-ff256902c753", "comment.create"})
 	testdata = append(testdata, data{"51d968b1-b9e5-4ec1-884a-ff256902c753", "comment.update"})
 
-	fmt.Println("Generating test templtes..")
+	fmt.Println("Generating test templates..")
 	fmt.Println("")
 
 	for _, d := range testdata {
