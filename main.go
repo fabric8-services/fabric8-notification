@@ -14,13 +14,13 @@ import (
 	"github.com/fabric8-services/fabric8-notification/validator"
 	"github.com/fabric8-services/fabric8-notification/wit"
 
-	"github.com/Sirupsen/logrus"
 	witmiddleware "github.com/fabric8-services/fabric8-wit/goamiddleware"
 	"github.com/fabric8-services/fabric8-wit/log"
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
 	"github.com/goadesign/goa/middleware/gzip"
 	goajwt "github.com/goadesign/goa/middleware/security/jwt"
+	"github.com/sirupsen/logrus"
 
 	goalogrus "github.com/goadesign/goa/logging/logrus"
 )
