@@ -62,7 +62,7 @@ func TestWorkItemUnverifiedEmails(t *testing.T) {
 	assertWorkItemVars(t, vars)
 	assert.True(t, len(users) >= 5)
 	for _, u := range users {
-		assert.False(t, strings.HasPrefix(u.EMail,"unverified"))
+		assert.False(t, strings.HasPrefix(u.EMail, "unverified"))
 	}
 }
 
@@ -95,7 +95,7 @@ func TestCommentUnverifiedEmails(t *testing.T) {
 	assertCommentVars(t, vars)
 	assert.True(t, len(users) >= 5)
 	for _, u := range users {
-		assert.False(t, strings.HasPrefix(u.EMail,"unverified"))
+		assert.False(t, strings.HasPrefix(u.EMail, "unverified"))
 	}
 }
 
@@ -123,10 +123,10 @@ type DummyCollaboratorCollector struct {
 }
 
 func (c *DummyCollaboratorCollector) GetSpaceCollaborators(ctx context.Context, client *authApi.Client, spaceID uuid.UUID) (*authApi.UserList, error) {
-	users:=authApi.UserList{
-		Data: []*authApi.UserData {},
+	users := authApi.UserList{
+		Data: []*authApi.UserData{},
 	}
-	for i:=0; i<5; i++ {
+	for i := 0; i < 5; i++ {
 		users.Data = append(users.Data, generateUserData(false))
 		users.Data = append(users.Data, generateUserData(true))
 	}
@@ -143,12 +143,12 @@ func generateUserData(verifiedEmail bool) *authApi.UserData {
 		email = "unverified" + id
 	}
 	data := authApi.UserData{
-		ID: &id,
+		ID:   &id,
 		Type: "identities",
 		Attributes: &authApi.UserDataAttributes{
-			Username: &id,
-			Email: &email,
-			FullName: &id,
+			Username:      &id,
+			Email:         &email,
+			FullName:      &id,
 			EmailVerified: &verifiedEmail,
 		},
 	}
