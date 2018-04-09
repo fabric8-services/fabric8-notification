@@ -1,134 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Work Item Comment Updated in {{.workitemArea.Data.Attributes.Name}}</title>
-  <style>
-    tr td ul li img {
-      max-width: 500px;
-    }
-
-    tr td pre {
-      overflow: auto;
-    }
-
-    a:hover {
-      text-decoration: underline !important;
-    }
-  </style>
-</head>
-
-<body style="
-        margin: 10px;
-        padding: 0;
-        background-color: #f9f9f9;
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Work Item Comment Updated in {{.workitemArea.Data.Attributes.Name}}</title>
+    <style>
+      body {
         font-family: 'Open Sans', sans-serif;
         font-size: 14px;
-        font-weight: lighter;
-        line-height: 1.2;">
-  <div style="
+        font-weight: 300;
+        line-height: 1.2;
+        color: #72767b;
+        margin: 10px;
+        padding: 0;
+        background-color: #fff;
+      }
+      tr td ul li img {
+        max-width: 500px;
+      }
+      tr td pre {
+        overflow: auto;
+      }
+      .container {
         min-height: 300px;
         width: 100%;
         max-width: 750px;
         margin: 0 auto;
-        padding: 20px;
-        border: 1px solid #d7d7d7;
-        border-radius: 4px;
+        padding: 15px;
+        border: .5px solid;
+        border-color: #979797;
         background-color: #fff;
-        box-shadow: 0 2px 4px #d7d7d7;">
-    <div style="
-          width: 100%;">
-      <img src="{{.webURL}}/_openshiftio/assets/images/openshift_logo_black.png" width="25%" height="45px" />
-      <div style="
-            width: 95%;
-            margin: 10px auto;
-            border: 1px solid #d7d7d7;">
+      }
+      .divider {
+        margin-top: 15px;
+        margin-bottom: 10px;
+        border: .5px solid;
+        border-color: #bbb;
+      }
+      .divider-vertical {
+        border-left: 1px solid;
+        border-left-color: #bbb;
+        margin-left: 5px;
+        margin-right: 5px;
+      }
+      .user-icon {
+        height: 15px;
+        width: 15px;
+        vertical-align: top;
+        border-radius: 50%;
+      }
+      .link {
+        color: #0088ce;
+        text-decoration: none;
+      }
+      .link-area {
+        padding-left: 5px;
+        border-left: 1px solid;
+        border-left-color: #979797;
+        color: #72767b;
+        text-decoration: none;
+        font-weight: 400;
+      }
+      .link-area:hover {
+        text-decoration: none !important;
+      }
+      a:hover {
+        color: #00659c;
+        text-decoration: underline !important;
+      }
+      .description-text p:first-of-type {
+        margin-top: 0;
+      }
+      .content {
+        padding-top: 5px;
+        min-height: 150px;
+        max-width: 700px;
+        text-align: left;
+      }
+      .footer {
+        margin-top: 25px;
+        margin-bottom: 5px;
+        display: inline-flex;
+      }
+      .link-footer {
+        color: #0088ce;
+        text-decoration: none;
+        vertical-align: sub;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div style="width: 100%;">
+        <img src="{{.webURL}}/_openshiftio/assets/images/openshift_logo_black.png" width="25%" height="45px" alt="Red Hat OpenShift.io" />
+        <div class="divider"></div>
+        <p>
+          <img src="{{sizeImage .commentOwner.Data.Attributes.ImageURL 22}}" class="user-icon"/>&nbsp;
+          <span style="margin-top: 5px;">
+            <a href="{{.webURL}}/{{.commentOwner.Data.Attributes.Username}}" class="link">
+              {{.commentOwner.Data.Attributes.FullName}}
+            </a>&nbsp;
+            <span style="font-weight: 600;">updated the comment</span> on work item
+            <span style="
+                    max-width: 250px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    display: inline-block;
+                    vertical-align: middle;">
+              <a href="{{detailURL .webURL .spaceOwner .space .workitem}}" class="link">
+                #{{index .workitem.Data.Attributes "system.number"}}
+              </a>
+            </span>
+            <span>
+              <a href="{{.webURL}}/{{.spaceOwner.Data.Attributes.Username}}/{{.space.Data.Attributes.Name}}/plan?area={{.workitemArea.Data.Attributes.Name}}" class="link-area">
+                {{lower .spaceOwner.Data.Attributes.Username}}{{areaPath .workitemArea.Data.Attributes.ParentPathResolved .workitemArea.Data.Attributes.Name}}
+              </a>
+            </span>
+          </span>
+        </p>
       </div>
-      <p>
-        <img src="{{sizeImage .commentOwner.Data.Attributes.ImageURL 22}}" style="height: 22px; width: 22px; vertical-align: middle;"
-        />&nbsp;
-        <span style="
-              margin-top: 5px;">
-          <a href="{{.webURL}}/{{.commentOwner.Data.Attributes.Username}}" style="color: #0088ce; text-decoration: none;">{{.commentOwner.Data.Attributes.FullName}}</a>&nbsp;
-          <span style="font-weight: 700;">updated the comment</span> on work item
-        <span style="
-                  max-width: 250px;
-                  white-space: nowrap;
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                  display: inline-block;
-                  vertical-align: middle;">
-            <a href="{{detailURL .webURL .spaceOwner .space .workitem}}"
-              style="
-                color: #0088ce;
-                font-weight: 700;
-                text-decoration: none;">
-              {{index .workitem.Data.Attributes "system.number"}}
-            </a>
-          </span>
-        <span style="
-                  border: 1px solid purple;
-                  width: auto;
-                  margin-left: 10px;">
-            <a href="{{.webURL}}/{{.spaceOwner.Data.Attributes.Username}}/{{.space.Data.Attributes.Name}}/plan?area={{.workitemArea.Data.Attributes.Name}}"
-               style="
-                  padding: 5px;
-                  font-size: 12px;
-                  color: purple;
-                  text-decoration: none;">
-              {{lower .spaceOwner.Data.Attributes.Username}}{{areaPath .workitemArea.Data.Attributes.ParentPathResolved .workitemArea.Data.Attributes.Name}}
-            </a>
-          </span>
-        </span>
-      </p>
-    </div>
-    <div style="
-          background-color: #f9f9f9;
-          padding: 10px 20px;">
-      <h3 style="margin-bottom: 5px;">
-        <a href="{{detailURL .webURL .spaceOwner .space .workitem}}" style="
-            color: #0088ce;
-            font-weight: 700;
-            text-decoration: none;">
-          {{index .workitem.Data.Attributes "system.title"}}
+      <div class="content">
+        <h3>
+          <a href="{{detailURL .webURL .spaceOwner .space .workitem}}" class="link">
+            {{index .workitem.Data.Attributes "system.title"}}
+          </a>
+        </h3>
+        <span style="font-size: 12px; color: #8b8d8f;">comment updated at {{date .comment.Data.Attributes.UpdatedAt}}</span>
+        <p style="font-size: 16px;">
+          {{raw .comment.Data.Attributes.BodyRendered}}
+        </p>
+      </div>
+      <div class="footer">
+        <a href="{{detailURL .webURL .spaceOwner .space .workitem}}" class="link-footer">
+          Link to this item
         </a>
-      </h3>
-      <span style="font-size: 12px; color: #8b8d8f;">comment updated at {{date .comment.Data.Attributes.UpdatedAt}}</span>
-      <p style="
-          font-size: 16px;
-          text-align: left;
-          min-height: 150px;
-          max-width: 700px;">
-        {{raw .comment.Data.Attributes.BodyRendered}}
-      </p>
+        <span class="divider-vertical"></span>
+        <a href="{{detailURL .webURL .spaceOwner .space .workitem}}" class="link-footer">
+          Comment
+        </a>
+      </div>
     </div>
-    <div style="
-            margin-top: 25px;
-            margin-bottom: 5px;
-            display: inline-flex;">
-      <span style="width: 150px;">
-        <a href="{{detailURL .webURL .spaceOwner .space .workitem}}"
-            style="
-              color: #0088ce;
-              text-decoration: none;
-              font-weight: 500;
-              vertical-align: sub;">
-              Link to this item</a>
-      </span>
-      <span style="width: 150px;">
-        <a href="{{detailURL .webURL .spaceOwner .space .workitem}}"
-            style="
-              color: #0088ce;
-              text-decoration: none;
-              font-weight: 500;
-              vertical-align: sub;">
-              Comment</a>
-      </span>
-    </div>
-  </div>
-</body>
+  </body>
 
 </html>
