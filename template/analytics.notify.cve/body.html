@@ -85,12 +85,11 @@
       <div style="margin-top: 25px;">
         <span style="font-weight: 600;color:#72767B;">Summary of changes found</span>
       </div>
-      {{ $dependenciesArr := .custom.vulnerable_deps | jsonToArray }}
       <div style="margin-top: 15px;color:#363636;font-weight: 300;">
           <span>Number of CVE(s):</span>
           <span>{{ .custom.cve_count }}</span>&nbsp;&nbsp;
           <span>Number of dependencies affected:</span>
-          <span>{{ len $dependenciesArr }}</span>
+          <span>{{ len .custom.vulnerable_deps }}</span>
       </div>
       <div style="margin-top: 25px;">
         <span style="color:#72767B;font-weight: 600;">Details of CVE(s) found</span>
@@ -102,15 +101,14 @@
           <th style="text-align: center;">Current Version</th>
           <th>CVE ID(s) and corresponding CVSS Score(s)</th>
         </tr>
-        {{ range $i2, $dependency := $dependenciesArr }}
+        {{ range $depsInd, $dependency := .custom.vulnerable_deps }}
         <tr>
-          <td>#{{inc $i2}}</td>
+          <td>#{{inc $depsInd}}</td>
           <td>{{$dependency.name}}</td>
           <td>{{$dependency.version}}</td>
           <td>
             {{ $cvesArr := $dependency.cves }}
-            {{ range $i3, $ele3 := $cvesArr }}
-            {{ $cveMap := $ele3 }}
+            {{ range $ind, $cveMap := $cvesArr }}
             {{ $cveMap.CVE }} <b>[{{ $cveMap.CVSS }}/10]</b>,
             {{ end }}
           </td>

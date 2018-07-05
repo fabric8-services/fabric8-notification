@@ -2,12 +2,14 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/fabric8-services/fabric8-notification/app"
 	"github.com/fabric8-services/fabric8-notification/auth"
 	authapi "github.com/fabric8-services/fabric8-notification/auth/api"
 	"github.com/fabric8-services/fabric8-notification/collector"
@@ -96,39 +98,50 @@ func generate(authClient *authapi.Client, c *api.Client, id, tmplName string) er
 
 	} else if strings.HasPrefix(tmplName, "analytics") {
 		vars = make(map[string]interface{})
-		vars["custom"] = map[string]interface{}{
-			"repo_url":   "https://github.com/test-repo/testproject.git",
-			"scanned_at": "2018-06-18T12:25:24",
-			"cve_count":  "3",
-			"vulnerable_deps": `[
-				{
-					"name": "com.logback.core",
-					"version": "2.0",
-					"cves": [
+		payload := `{
+			"data": {
+				"attributes": {
+				"custom": {
+					"repo_url": "git@github.com:nurali-techie/dummyapp1.git",
+					"scanned_at": "2018-06-18T12:25:24",
+					"cve_count": "3",
+					"vulnerable_deps": [
+					{
+						"name": "com.logback.core",
+						"version": "2.0",
+						"cves": [
 						{
 							"CVE": "CVE-2016-7643",
-							"CVSS": "9.0"
+							"CVSS": "8.0"
 						},
 						{
 							"CVE": "CVE-2016-7643",
 							"CVSS": "5.0"
 						}
-					],
-					"cve_count": 2
-				},
-				{
-					"name": "com.logback.web",
-					"version": "1.5",
-					"cves": [
+						],
+						"cve_count": 2
+					},
+					{
+						"name": "com.logback.web",
+						"version": "1.5",
+						"cves": [
 						{
 							"CVE": "CVE-2016-7643",
 							"CVSS": "8.0"
 						}
-					],
-					"cve_count": 1
-				}
-			]`,
-		}
+						],
+						"cve_count": 1
+					}
+					]
+				},
+				"id": "git@github.com:nurali-techie/dummyapp1.git",
+				"type": "analytics.notify.cve"
+				},
+				"id": "4c34f6d4-f00b-487b-9a1f-e7d1adba6866",
+				"type": "notifications"
+			}
+			}`
+		vars["custom"] = getParams(payload)
 	} else {
 		return fmt.Errorf("Unkown resolver for template %v", tmplName)
 	}
@@ -162,4 +175,13 @@ func generate(authClient *authapi.Client, c *api.Client, id, tmplName string) er
 func addGlobalVars(vars map[string]interface{}) map[string]interface{} {
 	vars["webURL"] = "https://openshift.io"
 	return vars
+}
+
+func getParams(payload string) map[string]interface{} {
+	notifyPayload := &app.SendNotifyPayload{}
+	err := json.Unmarshal([]byte(payload), notifyPayload)
+	if err != nil {
+		return nil
+	}
+	return notifyPayload.Data.Attributes.Custom
 }
