@@ -1,6 +1,7 @@
 package template
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"strings"
@@ -67,4 +68,19 @@ func areaPath(parentPath, name string) string {
 		p = ""
 	}
 	return fmt.Sprintf("%v/%v", lower(p), lower(name))
+}
+
+func jsonToArray(value interface{}) []interface{} {
+	m := []interface{}{}
+	if jsondata, ok := value.(string); ok {
+		err := json.Unmarshal([]byte(jsondata), &m)
+		if err != nil {
+			return make([]interface{}, 0, 0)
+		}
+	}
+	return m
+}
+
+func inc(i int) int {
+	return i + 1
 }

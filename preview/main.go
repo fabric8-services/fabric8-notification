@@ -48,6 +48,8 @@ func main() {
 	testdata = append(testdata, data{"81d1c3bf-fcf2-4c4e-9d12-f9e5c15fb9ab", "invitation.team.noorg"})
 	testdata = append(testdata, data{"297f2037-72e9-42b3-a5fc-76d843877163", "invitation.space.noorg"})
 
+	testdata = append(testdata, data{"0a9c6814-462e-411c-8560-d74297bf1ceb", "analytics.notify.cve"})
+
 	fmt.Println("Generating test templates..")
 	fmt.Println("")
 
@@ -92,6 +94,41 @@ func generate(authClient *authapi.Client, c *api.Client, id, tmplName string) er
 			"acceptURL": "http://openshift.io/invitations/accept/12345-ABCDE-FFFFF-99999-88888",
 		}
 
+	} else if strings.HasPrefix(tmplName, "analytics") {
+		vars = make(map[string]interface{})
+		vars["custom"] = map[string]interface{}{
+			"repo_url":   "https://github.com/test-repo/testproject.git",
+			"scanned_at": "2018-06-18T12:25:24",
+			"cve_count":  "3",
+			"vulnerable_deps": `[
+				{
+					"name": "com.logback.core",
+					"version": "2.0",
+					"cves": [
+						{
+							"CVE": "CVE-2016-7643",
+							"CVSS": "9.0"
+						},
+						{
+							"CVE": "CVE-2016-7643",
+							"CVSS": "5.0"
+						}
+					],
+					"cve_count": 2
+				},
+				{
+					"name": "com.logback.web",
+					"version": "1.5",
+					"cves": [
+						{
+							"CVE": "CVE-2016-7643",
+							"CVSS": "8.0"
+						}
+					],
+					"cve_count": 1
+				}
+			]`,
+		}
 	} else {
 		return fmt.Errorf("Unkown resolver for template %v", tmplName)
 	}
