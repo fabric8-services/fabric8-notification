@@ -4,12 +4,51 @@ import (
 	"context"
 
 	authapi "github.com/fabric8-services/fabric8-notification/auth/api"
+	"github.com/fabric8-services/fabric8-notification/wit"
 	"github.com/fabric8-services/fabric8-notification/wit/api"
+	"github.com/goadesign/goa/uuid"
 )
 
 func NewCVEResolver(authClient *authapi.Client, witClient *api.Client) ReceiverResolver {
-	return func(ctx context.Context, id string) ([]Receiver, map[string]interface{}, error) {
+	return func(ctx context.Context, url string) ([]Receiver, map[string]interface{}, error) {
 		var values = map[string]interface{}{}
-		return nil, values, nil
+
+		codebases, err := wit.GetCodebases(context.Background(), witClient, url)
+		if err != nil {
+			return nil, values, err
+		}
+
+		spaceIDs := collectCodebasesSpaces(codebases)
+		spaces, err := wit.GetSpaces(context.Background(), witClient, spaceIDs)
+		if err != nil {
+			return nil, values, err
+		}
+
+		users := collectSpacesUsers(spaces)
+		resolved, err := resolveAllUsers(ctx, authClient, SliceUniq(users), []*authapi.UserData{}, false)
+		if err != nil {
+			return nil, values, err
+		}
+
+		return resolved, values, nil
 	}
+}
+
+func collectCodebasesSpaces(codebases *api.CodebaseList) []uuid.UUID {
+	var spaces []uuid.UUID
+	for _, cb := range codebases.Data {
+		space, err := uuid.FromString(*cb.Relationships.Space.Data.ID)
+		if err == nil {
+			spaces = append(spaces, space)
+		}
+	}
+	return spaces
+}
+
+func collectSpacesUsers(spaces []*api.SpaceSingle) []uuid.UUID {
+	var users []uuid.UUID
+	for _, space := range spaces {
+		users = append(users, *space.Data.Relationships.OwnedBy.Data.ID)
+	}
+	return users
 }
