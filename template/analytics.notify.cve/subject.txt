@@ -1,1 +1,1 @@
-Security Alerts
+Scan report for codebase {{.custom.repo_url}}
