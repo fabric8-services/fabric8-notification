@@ -109,7 +109,11 @@
           <td>
             {{ $cvesArr := $dependency.cves }}
             {{ range $ind, $cveMap := $cvesArr }}
-            {{ $cveMap.CVE }} <b>[{{ $cveMap.CVSS }}/10]</b>,
+              {{ if (eq $ind 0) }}
+              {{ $cveMap.CVE }} <b>[{{ $cveMap.CVSS }}/10]</b>
+              {{ else }}
+              ,&nbsp;{{ $cveMap.CVE }} <b>[{{ $cveMap.CVSS }}/10]</b>
+              {{ end }}
             {{ end }}
           </td>
         </tr>

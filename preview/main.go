@@ -100,47 +100,47 @@ func generate(authClient *authapi.Client, c *api.Client, id, tmplName string) er
 		vars = make(map[string]interface{})
 		payload := `{
 			"data": {
-				"attributes": {
+			  "attributes": {
 				"custom": {
-					"repo_url": "git@github.com:nurali-techie/dummyapp1.git",
-					"scanned_at": "2018-06-18T12:25:24",
-					"cve_count": "3",
-					"vulnerable_deps": [
+				  "repo_url": "git@github.com:nurali-techie/dummyapp1.git",
+				  "scanned_at": "2018-06-18T12:25:24",
+				  "cve_count": 3,
+				  "vulnerable_deps": [
 					{
-						"name": "com.logback.core",
-						"version": "2.0",
-						"cves": [
+					  "name": "com.logback.core",
+					  "version": "2.0",
+					  "cves": [
 						{
-							"CVE": "CVE-2016-7643",
-							"CVSS": "8.0"
+						  "CVE": "CVE-2016-7643",
+						  "CVSS": "8.0"
 						},
 						{
-							"CVE": "CVE-2016-7643",
-							"CVSS": "5.0"
+						  "CVE": "CVE-2016-7643",
+						  "CVSS": "5.0"
 						}
-						],
-						"cve_count": 2
+					  ],
+					  "cve_count": 2
 					},
 					{
-						"name": "com.logback.web",
-						"version": "1.5",
-						"cves": [
+					  "name": "com.logback.web",
+					  "version": "1.5",
+					  "cves": [
 						{
-							"CVE": "CVE-2016-7643",
-							"CVSS": "8.0"
+						  "CVE": "CVE-2016-7643",
+						  "CVSS": "8.0"
 						}
-						],
-						"cve_count": 1
+					  ],
+					  "cve_count": 1
 					}
-					]
+				  ]
 				},
 				"id": "git@github.com:nurali-techie/dummyapp1.git",
 				"type": "analytics.notify.cve"
-				},
-				"id": "4c34f6d4-f00b-487b-9a1f-e7d1adba6866",
-				"type": "notifications"
+			  },
+			  "id": "4c34f6d4-f00b-487b-9a1f-e7d1adba6866",
+			  "type": "notifications"
 			}
-			}`
+		  }`
 		vars["custom"] = getParams(payload)
 	} else {
 		return fmt.Errorf("Unkown resolver for template %v", tmplName)
