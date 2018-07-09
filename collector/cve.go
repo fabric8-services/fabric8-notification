@@ -33,7 +33,7 @@ func NewCVEResolver(authClient *authapi.Client, witClient *api.Client) ReceiverR
 func collectCodebasesSpaces(codebases *api.CodebaseList) []uuid.UUID {
 	var spaces []uuid.UUID
 	for _, cb := range codebases.Data {
-		if *cb.Attributes.CveScan {
+		if cb.Attributes.CveScan != nil && *cb.Attributes.CveScan {
 			space, err := uuid.FromString(*cb.Relationships.Space.Data.ID)
 			if err == nil {
 				spaces = append(spaces, space)
