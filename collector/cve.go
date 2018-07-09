@@ -11,26 +11,22 @@ import (
 
 func NewCVEResolver(authClient *authapi.Client, witClient *api.Client) ReceiverResolver {
 	return func(ctx context.Context, url string) ([]Receiver, map[string]interface{}, error) {
-		var values = map[string]interface{}{}
-
 		codebases, err := wit.GetCodebases(context.Background(), witClient, url)
 		if err != nil {
-			return nil, values, err
+			return nil, nil, err
 		}
-
 		spaceIDs := collectCodebasesSpaces(codebases)
 		spaces, err := wit.GetSpaces(context.Background(), witClient, spaceIDs)
 		if err != nil {
-			return nil, values, err
+			return nil, nil, err
 		}
 
 		users := collectSpacesUsers(spaces)
 		resolved, err := resolveAllUsers(ctx, authClient, SliceUniq(users), []*authapi.UserData{}, false)
 		if err != nil {
-			return nil, values, err
+			return nil, nil, err
 		}
-
-		return resolved, values, nil
+		return resolved, nil, nil
 	}
 }
 

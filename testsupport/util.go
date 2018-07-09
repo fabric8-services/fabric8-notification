@@ -1,8 +1,11 @@
 package testsupport
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"path/filepath"
+
+	"github.com/fabric8-services/fabric8-notification/app"
 )
 
 func GetFileContent(path string) (string, error) {
@@ -15,4 +18,13 @@ func GetFileContent(path string) (string, error) {
 		return "", err
 	}
 	return string(content), nil
+}
+
+func GetCustomElement(payload string) map[string]interface{} {
+	notifyPayload := &app.SendNotifyPayload{}
+	err := json.Unmarshal([]byte(payload), notifyPayload)
+	if err != nil {
+		return nil
+	}
+	return notifyPayload.Data.Attributes.Custom
 }

@@ -17,16 +17,16 @@ import (
 )
 
 func createLocalClient(t *testing.T, witURL, authURL string) (*witApi.Client, *authApi.Client) {
-	c, err := wit.NewCachedClient(witURL)
+	witClient, err := wit.NewCachedClient(witURL)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	authApi, err := auth.NewCachedClient(authURL)
+	authClient, err := auth.NewCachedClient(authURL)
 	if err != nil {
 		t.Fatal(err)
 	}
-	return c, authApi
+	return witClient, authClient
 }
 
 func TestCVEResolver(t *testing.T) {

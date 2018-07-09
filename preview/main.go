@@ -2,14 +2,12 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 
-	"github.com/fabric8-services/fabric8-notification/app"
 	"github.com/fabric8-services/fabric8-notification/auth"
 	authapi "github.com/fabric8-services/fabric8-notification/auth/api"
 	"github.com/fabric8-services/fabric8-notification/collector"
@@ -101,7 +99,7 @@ func generate(authClient *authapi.Client, c *api.Client, id, tmplName string) er
 		vars = make(map[string]interface{})
 		payload, err := testsupport.GetFileContent("preview/test-files/cve.payload.json")
 		if err == nil {
-			vars["custom"] = getCustom(payload)
+			vars["custom"] = testsupport.GetCustomElement(payload)
 		}
 	} else {
 		return fmt.Errorf("Unkown resolver for template %v", tmplName)
@@ -136,13 +134,4 @@ func generate(authClient *authapi.Client, c *api.Client, id, tmplName string) er
 func addGlobalVars(vars map[string]interface{}) map[string]interface{} {
 	vars["webURL"] = "https://openshift.io"
 	return vars
-}
-
-func getCustom(payload string) map[string]interface{} {
-	notifyPayload := &app.SendNotifyPayload{}
-	err := json.Unmarshal([]byte(payload), notifyPayload)
-	if err != nil {
-		return nil
-	}
-	return notifyPayload.Data.Attributes.Custom
 }

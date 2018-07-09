@@ -146,11 +146,9 @@ func GetCodebases(ctx context.Context, client *api.Client, url string) (*api.Cod
 	if resp != nil {
 		defer resp.Body.Close()
 	}
-
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("non %v status code for %v, returned %v", http.StatusOK, "GET space", resp.StatusCode)
 	}
-
 	if err != nil {
 		return nil, err
 	}
