@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/fabric8-services/fabric8-notification/app"
@@ -8,10 +9,19 @@ import (
 	"github.com/fabric8-services/fabric8-notification/email"
 	"github.com/fabric8-services/fabric8-notification/jsonapi"
 	"github.com/fabric8-services/fabric8-notification/template"
+	"github.com/fabric8-services/fabric8-notification/token"
 	"github.com/fabric8-services/fabric8-wit/errors"
 	"github.com/fabric8-services/fabric8-wit/log"
 	"github.com/goadesign/goa"
 )
+
+const (
+	CVENotification string = "analytics.notify.cve"
+)
+
+var nTypeToSAMap = map[string]string{
+	CVENotification: "fabric8-gemini-server",
+}
 
 // NotifyController implements the notify resource.
 type NotifyController struct {
@@ -28,8 +38,12 @@ func NewNotifyController(service *goa.Service, cRegistry collector.Registry, tRe
 
 // Send runs the send action.
 func (c *NotifyController) Send(ctx *app.SendNotifyContext) error {
-	nID := ctx.Payload.Data.Attributes.ID
 	nType := ctx.Payload.Data.Attributes.Type
+	if !checkAllowedSrvcAcc(ctx, nType) {
+		return jsonapi.JSONErrorResponse(ctx, errors.NewUnauthorizedError(fmt.Sprintf("Wrong token for '%s' notification type", nType)))
+	}
+
+	nID := ctx.Payload.Data.Attributes.ID
 	customAttributes := ctx.Payload.Data.Attributes.Custom
 
 	var found bool
@@ -63,4 +77,12 @@ func (c *NotifyController) Send(ctx *app.SendNotifyContext) error {
 	c.Notifier.Send(ctx, email.Notification{ID: nID, Type: nType, CustomAttributes: customAttributes, Resolver: receiverResolver, Template: template})
 
 	return ctx.Accepted()
+}
+
+func checkAllowedSrvcAcc(ctx context.Context, nType string) bool {
+	sa := nTypeToSAMap[nType]
+	if sa != "" {
+		return token.IsSpecificServiceAccount(ctx, sa)
+	}
+	return true
 }

@@ -3,9 +3,12 @@ package controller
 import (
 	"context"
 	"fmt"
+	"testing"
+
+	jwt "github.com/dgrijalva/jwt-go"
+	goajwt "github.com/goadesign/goa/middleware/security/jwt"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
 
 	"github.com/fabric8-services/fabric8-notification/app"
 	"github.com/fabric8-services/fabric8-notification/app/test"
@@ -160,4 +163,38 @@ func TestNotifySendWithoutCustomParamSuccess(t *testing.T) {
 	}
 
 	test.SendNotifyAccepted(t, nil, nil, ctrl, payload)
+}
+
+func TestCheckAllowedSrvcAcc(t *testing.T) {
+
+	t.Run("service_allowed", func(t *testing.T) {
+		claims := jwt.MapClaims{}
+		claims["service_accountname"] = "fabric8-gemini-server"
+		ctx := goajwt.WithJWT(context.Background(), jwt.NewWithClaims(jwt.SigningMethodRS512, claims))
+		nType := CVENotification
+		assert.True(t, checkAllowedSrvcAcc(ctx, nType))
+	})
+
+	t.Run("service_not_allowed", func(t *testing.T) {
+		claims := jwt.MapClaims{}
+		claims["service_accountname"] = "test-service"
+		ctx := goajwt.WithJWT(context.Background(), jwt.NewWithClaims(jwt.SigningMethodRS512, claims))
+		nType := CVENotification
+		assert.False(t, checkAllowedSrvcAcc(ctx, nType))
+	})
+
+	t.Run("service_missing", func(t *testing.T) {
+		claims := jwt.MapClaims{}
+		ctx := goajwt.WithJWT(context.Background(), jwt.NewWithClaims(jwt.SigningMethodRS512, claims))
+		nType := CVENotification
+		assert.False(t, checkAllowedSrvcAcc(ctx, nType))
+	})
+
+	t.Run("no_service_restriction", func(t *testing.T) {
+		claims := jwt.MapClaims{}
+		ctx := goajwt.WithJWT(context.Background(), jwt.NewWithClaims(jwt.SigningMethodRS512, claims))
+		nType := "user.email.update"
+		assert.True(t, checkAllowedSrvcAcc(ctx, nType))
+	})
+
 }
