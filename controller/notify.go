@@ -16,11 +16,13 @@ import (
 )
 
 const (
-	CVENotification string = "analytics.notify.cve"
+	CVENotification             string = "analytics.notify.cve"
+	UserEmailUpdateNotification string = "user.email.update"
 )
 
 var nTypeToSAMap = map[string]string{
-	CVENotification: "fabric8-gemini-server",
+	CVENotification:             "fabric8-gemini-server",
+	UserEmailUpdateNotification: "fabric8-auth",
 }
 
 // NotifyController implements the notify resource.
