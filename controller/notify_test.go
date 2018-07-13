@@ -17,13 +17,14 @@ import (
 	"github.com/fabric8-services/fabric8-notification/configuration"
 	"github.com/fabric8-services/fabric8-notification/email"
 	"github.com/fabric8-services/fabric8-notification/template"
+	"github.com/fabric8-services/fabric8-notification/types"
 	"github.com/fabric8-services/fabric8-notification/validator"
 	"github.com/goadesign/goa"
 )
 
 func TestNotifySendUnknownType(t *testing.T) {
 
-	resolvers := &collector.LocalRegistry{}
+	resolvers := collector.NewRegistry()
 	typeRegistry := &template.AssetRegistry{}
 	notifier := &email.CallbackNotifier{Callback: func(ctx context.Context, notification email.Notification) { fmt.Println(notification) }}
 	ctrl := NewNotifyController(goa.New("send-test"), resolvers, typeRegistry, notifier)
@@ -45,11 +46,11 @@ func TestNotifySendWithCustomParam(t *testing.T) {
 
 	config, _ := configuration.GetData()
 
-	resolvers := &collector.LocalRegistry{}
+	resolvers := collector.NewRegistry()
 	typeRegistry := &template.AssetRegistry{}
 	authClient, _ := auth.NewCachedClient(config.GetWITURL())
 
-	resolvers.Register(UserEmailUpdateNotification, collector.ConfiguredVars(config, collector.NewUserResolver(authClient)), validator.ValidateUser)
+	resolvers.Register(types.UserEmailUpdate, collector.ConfiguredVars(config, collector.NewUserResolver(authClient)), validator.ValidateUser)
 	notifier := &email.CallbackNotifier{
 		Callback: func(ctx context.Context, notification email.Notification) {
 			require.NotNil(t, notification.CustomAttributes)
@@ -62,7 +63,7 @@ func TestNotifySendWithCustomParam(t *testing.T) {
 		Data: &app.Notification{
 			Attributes: &app.NotificationAttributes{
 				ID:   "13132",
-				Type: UserEmailUpdateNotification,
+				Type: string(types.UserEmailUpdate),
 				Custom: map[string]interface{}{
 					"verifyURL": "https://someurl.openshift.io",
 				},
@@ -82,11 +83,11 @@ func TestNotifySendWithoutustomParamBadRequest(t *testing.T) {
 
 	config, _ := configuration.GetData()
 
-	resolvers := &collector.LocalRegistry{}
+	resolvers := collector.NewRegistry()
 	typeRegistry := &template.AssetRegistry{}
 	authClient, _ := auth.NewCachedClient(config.GetWITURL())
 
-	resolvers.Register(UserEmailUpdateNotification, collector.ConfiguredVars(config, collector.NewUserResolver(authClient)), validator.ValidateUser)
+	resolvers.Register(types.UserEmailUpdate, collector.ConfiguredVars(config, collector.NewUserResolver(authClient)), validator.ValidateUser)
 	notifier := &email.CallbackNotifier{
 		Callback: func(ctx context.Context, notification email.Notification) {
 			require.NotNil(t, notification.CustomAttributes)
@@ -99,7 +100,7 @@ func TestNotifySendWithoutustomParamBadRequest(t *testing.T) {
 		Data: &app.Notification{
 			Attributes: &app.NotificationAttributes{
 				ID:   "13132",
-				Type: UserEmailUpdateNotification,
+				Type: string(types.UserEmailUpdate),
 			},
 			Type: "notifications",
 		},
@@ -116,11 +117,11 @@ func TestNotifySendWithCustomParamBadRequest(t *testing.T) {
 
 	config, _ := configuration.GetData()
 
-	resolvers := &collector.LocalRegistry{}
+	resolvers := collector.NewRegistry()
 	typeRegistry := &template.AssetRegistry{}
 	authClient, _ := auth.NewCachedClient(config.GetWITURL())
 
-	resolvers.Register(UserEmailUpdateNotification, collector.ConfiguredVars(config, collector.NewUserResolver(authClient)), validator.ValidateUser)
+	resolvers.Register(types.UserEmailUpdate, collector.ConfiguredVars(config, collector.NewUserResolver(authClient)), validator.ValidateUser)
 	notifier := &email.CallbackNotifier{
 		Callback: func(ctx context.Context, notification email.Notification) {
 			require.NotNil(t, notification.CustomAttributes)
@@ -133,7 +134,7 @@ func TestNotifySendWithCustomParamBadRequest(t *testing.T) {
 		Data: &app.Notification{
 			Attributes: &app.NotificationAttributes{
 				ID:   "13132",
-				Type: UserEmailUpdateNotification,
+				Type: string(types.UserEmailUpdate),
 				Custom: map[string]interface{}{
 					"somthing_else": "https://someurl.openshift.io",
 				},
@@ -153,7 +154,7 @@ func TestNotifySendWithoutCustomParamSuccess(t *testing.T) {
 
 	config, _ := configuration.GetData()
 
-	resolvers := &collector.LocalRegistry{}
+	resolvers := collector.NewRegistry()
 	typeRegistry := &template.AssetRegistry{}
 	authClient, _ := auth.NewCachedClient(config.GetWITURL())
 
@@ -179,13 +180,13 @@ func TestNotifySendWithoutCustomParamSuccess(t *testing.T) {
 
 func TestNotifySendUnauthorized(t *testing.T) {
 	notifier := &email.CallbackNotifier{Callback: func(ctx context.Context, notification email.Notification) { /* blank */ }}
-	ctrl := NewNotifyController(goa.New("send-test"), &collector.LocalRegistry{}, &template.AssetRegistry{}, notifier)
+	ctrl := NewNotifyController(goa.New("send-test"), collector.NewRegistry(), &template.AssetRegistry{}, notifier)
 
 	payload := &app.SendNotifyPayload{
 		Data: &app.Notification{
 			Attributes: &app.NotificationAttributes{
 				ID:   "git@github.com:testrepo/testproject1.git",
-				Type: CVENotification,
+				Type: string(types.AnalyticsNotifyCVE),
 			},
 			Type: "notifications",
 		},
@@ -198,36 +199,32 @@ func TestNotifySendUnauthorized(t *testing.T) {
 	test.SendNotifyUnauthorized(t, ctx, nil, ctrl, payload)
 }
 
-func TestCheckAllowedSrvcAcc(t *testing.T) {
+func TestValidateNotifier(t *testing.T) {
 
 	t.Run("service_allowed", func(t *testing.T) {
 		claims := jwt.MapClaims{}
 		claims["service_accountname"] = "fabric8-gemini-server"
 		ctx := goajwt.WithJWT(context.Background(), jwt.NewWithClaims(jwt.SigningMethodRS512, claims))
-		nType := CVENotification
-		assert.True(t, checkAllowedSrvcAcc(ctx, nType))
+		assert.True(t, validateNotifier(ctx, types.AnalyticsNotifyCVE.Notifiers()))
 	})
 
 	t.Run("service_not_allowed", func(t *testing.T) {
 		claims := jwt.MapClaims{}
 		claims["service_accountname"] = "test-service"
 		ctx := goajwt.WithJWT(context.Background(), jwt.NewWithClaims(jwt.SigningMethodRS512, claims))
-		nType := CVENotification
-		assert.False(t, checkAllowedSrvcAcc(ctx, nType))
+		assert.False(t, validateNotifier(ctx, types.AnalyticsNotifyCVE.Notifiers()))
 	})
 
 	t.Run("service_missing", func(t *testing.T) {
 		claims := jwt.MapClaims{}
 		ctx := goajwt.WithJWT(context.Background(), jwt.NewWithClaims(jwt.SigningMethodRS512, claims))
-		nType := CVENotification
-		assert.False(t, checkAllowedSrvcAcc(ctx, nType))
+		assert.False(t, validateNotifier(ctx, types.AnalyticsNotifyCVE.Notifiers()))
 	})
 
 	t.Run("no_service_restriction", func(t *testing.T) {
 		claims := jwt.MapClaims{}
 		ctx := goajwt.WithJWT(context.Background(), jwt.NewWithClaims(jwt.SigningMethodRS512, claims))
-		nType := "workitem.create"
-		assert.True(t, checkAllowedSrvcAcc(ctx, nType))
+		assert.True(t, validateNotifier(ctx, types.WorkitemCreate.Notifiers()))
 	})
 
 }

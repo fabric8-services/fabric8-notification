@@ -10,20 +10,11 @@ import (
 	"github.com/fabric8-services/fabric8-notification/jsonapi"
 	"github.com/fabric8-services/fabric8-notification/template"
 	"github.com/fabric8-services/fabric8-notification/token"
+	"github.com/fabric8-services/fabric8-notification/types"
 	"github.com/fabric8-services/fabric8-wit/errors"
 	"github.com/fabric8-services/fabric8-wit/log"
 	"github.com/goadesign/goa"
 )
-
-const (
-	CVENotification             string = "analytics.notify.cve"
-	UserEmailUpdateNotification string = "user.email.update"
-)
-
-var nTypeToSAMap = map[string]string{
-	CVENotification:             "fabric8-gemini-server",
-	UserEmailUpdateNotification: "fabric8-auth",
-}
 
 // NotifyController implements the notify resource.
 type NotifyController struct {
@@ -41,7 +32,7 @@ func NewNotifyController(service *goa.Service, cRegistry collector.Registry, tRe
 // Send runs the send action.
 func (c *NotifyController) Send(ctx *app.SendNotifyContext) error {
 	nType := ctx.Payload.Data.Attributes.Type
-	if !checkAllowedSrvcAcc(ctx, nType) {
+	if !validateNotifier(ctx, c.CollectorRegistry.Notifiers(types.NotificationType(nType))) {
 		return jsonapi.JSONErrorResponse(ctx, errors.NewUnauthorizedError(fmt.Sprintf("Wrong token for '%s' notification type", nType)))
 	}
 
@@ -52,7 +43,7 @@ func (c *NotifyController) Send(ctx *app.SendNotifyContext) error {
 	var template template.Template
 	var receiverResolver collector.ReceiverResolver
 
-	validator, found := c.CollectorRegistry.Validator(nType)
+	validator, found := c.CollectorRegistry.Validator(types.NotificationType(nType))
 	if found {
 		err := validator(ctx, customAttributes)
 		if err != nil {
@@ -67,7 +58,7 @@ func (c *NotifyController) Send(ctx *app.SendNotifyContext) error {
 		}, "resource requested")
 		return jsonapi.JSONErrorResponse(ctx, errors.NewBadParameterError("data.attributes.type", nType))
 	}
-	if receiverResolver, found = c.CollectorRegistry.Get(nType); !found {
+	if receiverResolver, found = c.CollectorRegistry.Get(types.NotificationType(nType)); !found {
 		log.Error(ctx, map[string]interface{}{
 			"err":  "ReceiverResolver not found",
 			"type": nType,
@@ -81,10 +72,9 @@ func (c *NotifyController) Send(ctx *app.SendNotifyContext) error {
 	return ctx.Accepted()
 }
 
-func checkAllowedSrvcAcc(ctx context.Context, nType string) bool {
-	sa := nTypeToSAMap[nType]
-	if sa != "" {
-		return token.IsSpecificServiceAccount(ctx, sa)
+func validateNotifier(ctx context.Context, notifiers []string) bool {
+	if notifiers != nil && len(notifiers) > 0 {
+		return token.IsSpecificServiceAccount(ctx, notifiers...)
 	}
 	return true
 }
