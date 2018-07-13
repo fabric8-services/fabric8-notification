@@ -158,7 +158,7 @@ func TestNotifySendWithoutCustomParamSuccess(t *testing.T) {
 	typeRegistry := &template.AssetRegistry{}
 	authClient, _ := auth.NewCachedClient(config.GetWITURL())
 
-	resolvers.Register("workitem.update", collector.ConfiguredVars(config, collector.NewUserResolver(authClient)), nil)
+	resolvers.Register(types.WorkitemUpdate, collector.ConfiguredVars(config, collector.NewUserResolver(authClient)), nil)
 	notifier := &email.CallbackNotifier{
 		Callback: func(ctx context.Context, notification email.Notification) {
 		}}
@@ -169,7 +169,7 @@ func TestNotifySendWithoutCustomParamSuccess(t *testing.T) {
 		Data: &app.Notification{
 			Attributes: &app.NotificationAttributes{
 				ID:   "13132",
-				Type: "workitem.update",
+				Type: string(types.WorkitemUpdate),
 			},
 			Type: "notifications",
 		},
