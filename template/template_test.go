@@ -7,6 +7,9 @@ import (
 
 	"strings"
 
+	jwt "github.com/dgrijalva/jwt-go"
+	goajwt "github.com/goadesign/goa/middleware/security/jwt"
+
 	"github.com/fabric8-services/fabric8-notification/auth"
 	authApi "github.com/fabric8-services/fabric8-notification/auth/api"
 	"github.com/fabric8-services/fabric8-notification/collector"
@@ -28,6 +31,15 @@ const (
 func addGlobalVars(vars map[string]interface{}) map[string]interface{} {
 	vars["webURL"] = "http://localhost"
 	return vars
+}
+
+// createOSIOUserContext creates a new context using "openshiftio" user's ID
+func createOSIOUserContext() context.Context {
+	claims := jwt.MapClaims{}
+	// Set actor ID to "openshiftio" user ID.
+	claims["sub"] = "7b50ddb4-5e12-4031-bca7-3b88f92e2339"
+	ctx := goajwt.WithJWT(context.Background(), jwt.NewWithClaims(jwt.SigningMethodRS512, claims))
+	return ctx
 }
 
 func createClient(t *testing.T) (*witApi.Client, *authApi.Client) {
@@ -64,8 +76,8 @@ func TestRenderWorkitemCreate(t *testing.T) {
 
 	witClient, authClient := createClient(t)
 	wiID, _ := uuid.FromString("8bccc228-bba7-43ad-b077-15fbb9148f7f")
-
-	_, vars, err := collector.WorkItem(context.Background(), authClient, witClient, &testsupport.DummyCollaboratorCollector{}, wiID)
+	ctx := createOSIOUserContext()
+	_, vars, err := collector.WorkItem(ctx, authClient, witClient, &testsupport.DummyCollaboratorCollector{}, wiID)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -98,8 +110,8 @@ func TestRenderWorkitemCreateMissingDescription(t *testing.T) {
 
 	witClient, authClient := createClient(t)
 	wiID, _ := uuid.FromString("8bccc228-bba7-43ad-b077-15fbb9148f7f")
-
-	_, vars, err := collector.WorkItem(context.Background(), authClient, witClient, &testsupport.DummyCollaboratorCollector{}, wiID)
+	ctx := createOSIOUserContext()
+	_, vars, err := collector.WorkItem(ctx, authClient, witClient, &testsupport.DummyCollaboratorCollector{}, wiID)
 	if err != nil {
 		t.Fatal(err)
 	}
