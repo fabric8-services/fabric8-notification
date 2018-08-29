@@ -89,7 +89,7 @@ func generate(authClient *authapi.Client, c *api.Client, id, tmplName string) er
 	if strings.HasPrefix(tmplName, "workitem") {
 		_, vars, err = collector.WorkItem(ctx, authClient, c, nil, wiID)
 	} else if strings.HasPrefix(tmplName, "comment") {
-		_, vars, err = collector.Comment(context.Background(), authClient, c, nil, wiID)
+		_, vars, err = collector.Comment(ctx, authClient, c, nil, wiID)
 	} else if strings.HasPrefix(tmplName, "user") {
 		_, vars, err = collector.User(context.Background(), authClient, wiID)
 		vars["custom"] = map[string]interface{}{
