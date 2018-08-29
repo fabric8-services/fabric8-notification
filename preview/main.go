@@ -8,9 +8,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	jwt "github.com/dgrijalva/jwt-go"
-	goajwt "github.com/goadesign/goa/middleware/security/jwt"
-
 	"github.com/fabric8-services/fabric8-notification/auth"
 	authapi "github.com/fabric8-services/fabric8-notification/auth/api"
 	"github.com/fabric8-services/fabric8-notification/collector"
@@ -82,7 +79,7 @@ func generate(authClient *authapi.Client, c *api.Client, id, tmplName string) er
 
 	// When running locally the actor ID has to be mocked
 	// since there is no real actor.
-	OSIOctx := createOSIOUserContext()
+	OSIOctx := testsupport.CreateOSIOUserContext()
 	if strings.HasPrefix(tmplName, "workitem") {
 		_, vars, err = collector.WorkItem(OSIOctx, authClient, c, nil, wiID)
 	} else if strings.HasPrefix(tmplName, "comment") {
@@ -148,13 +145,4 @@ func generate(authClient *authapi.Client, c *api.Client, id, tmplName string) er
 func addGlobalVars(vars map[string]interface{}) map[string]interface{} {
 	vars["webURL"] = "https://openshift.io"
 	return vars
-}
-
-// createOSIOUserContext creates a new context using "openshiftio" user's ID
-func createOSIOUserContext() context.Context {
-	claims := jwt.MapClaims{}
-	// Set actor ID to "openshiftio" user ID.
-	claims["sub"] = "7b50ddb4-5e12-4031-bca7-3b88f92e2339"
-	ctx := goajwt.WithJWT(context.Background(), jwt.NewWithClaims(jwt.SigningMethodRS512, claims))
-	return ctx
 }
