@@ -92,7 +92,7 @@ func TestRenderWorkitemCreate(t *testing.T) {
 	assert.Contains(t, headers, "X-OSIO-Area")
 
 	assert.True(t, strings.Contains(body, "http://localhost/openshiftio/openshiftio/plan/detail/1343"))
-	assert.True(t, strings.Contains(body, "Ruchir Garg"))
+	assert.True(t, strings.Contains(body, "OpenShift io"))
 	assert.True(t, strings.Contains(body, "1343"))
 	assert.True(t, strings.Contains(body, "mode under Backlog")) // part of the Description. Might change since we're on live data
 	assert.True(t, strings.Contains(body, "/openshiftio"))       // Space/Area tag. Might change since we're on live data
@@ -131,7 +131,7 @@ func TestRenderWorkitemCreateMissingDescription(t *testing.T) {
 	assert.Contains(t, headers, "X-OSIO-Area")
 
 	assert.True(t, strings.Contains(body, "http://localhost/openshiftio/openshiftio/plan/detail/1343"))
-	assert.True(t, strings.Contains(body, "Ruchir Garg"))
+	assert.True(t, strings.Contains(body, "OpenShift io"))
 	assert.True(t, strings.Contains(body, "1343"))
 
 	/*
