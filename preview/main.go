@@ -79,17 +79,14 @@ func generate(authClient *authapi.Client, c *api.Client, id, tmplName string) er
 
 	var vars map[string]interface{}
 	var err error
+
 	// When running locally the actor ID has to be mocked
 	// since there is no real actor.
-	claims := jwt.MapClaims{}
-	// Set actor ID to "openshiftio" user ID.
-	claims["sub"] = "7b50ddb4-5e12-4031-bca7-3b88f92e2339"
-	ctx := goajwt.WithJWT(context.Background(), jwt.NewWithClaims(jwt.SigningMethodRS512, claims))
-
+	OSIOctx := getOSIOUserContext()
 	if strings.HasPrefix(tmplName, "workitem") {
-		_, vars, err = collector.WorkItem(ctx, authClient, c, nil, wiID)
+		_, vars, err = collector.WorkItem(OSIOctx, authClient, c, nil, wiID)
 	} else if strings.HasPrefix(tmplName, "comment") {
-		_, vars, err = collector.Comment(ctx, authClient, c, nil, wiID)
+		_, vars, err = collector.Comment(OSIOctx, authClient, c, nil, wiID)
 	} else if strings.HasPrefix(tmplName, "user") {
 		_, vars, err = collector.User(context.Background(), authClient, wiID)
 		vars["custom"] = map[string]interface{}{
@@ -151,4 +148,13 @@ func generate(authClient *authapi.Client, c *api.Client, id, tmplName string) er
 func addGlobalVars(vars map[string]interface{}) map[string]interface{} {
 	vars["webURL"] = "https://openshift.io"
 	return vars
+}
+
+// getOSIOUserContext creates a new context using "openshiftio" user's ID
+func getOSIOUserContext() context.Context {
+	claims := jwt.MapClaims{}
+	// Set actor ID to "openshiftio" user ID.
+	claims["sub"] = "7b50ddb4-5e12-4031-bca7-3b88f92e2339"
+	ctx := goajwt.WithJWT(context.Background(), jwt.NewWithClaims(jwt.SigningMethodRS512, claims))
+	return ctx
 }
