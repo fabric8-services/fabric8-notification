@@ -39,6 +39,9 @@ required = [
   "github.com/jteeuwen/go-bindata/go-bindata",
   "github.com/fabric8-services/fabric8-auth/design",
   "github.com/fabric8-services/fabric8-wit/design",
+  "github.com/jstemmer/go-junit-report",
+  "github.com/wadey/gocovmerge",
+  
 ]
 
 [[constraint]]
@@ -72,6 +75,10 @@ required = [
 [[constraint]]
   name = "github.com/prometheus/client_golang"
   revision = "e51041b3fa41cece0dca035740ba6411905be473"
+
+[[constraint]]
+  name = "github.com/jstemmer/go-junit-report"
+  revision = "1ce4b93a20c6a280a7d5c1ef38c44d0d8c6d80ea"
 
 [prune]
   go-tests = true

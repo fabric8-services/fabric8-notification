@@ -198,6 +198,17 @@
   version = "v1.0"
 
 [[projects]]
+  digest = "1:9763429b775c481d48d220213d5811133993cbba428f4f8232ce86aeeae5fcb9"
+  name = "github.com/jstemmer/go-junit-report"
+  packages = [
+    ".",
+    "formatter",
+    "parser",
+  ]
+  pruneopts = "UT"
+  revision = "1ce4b93a20c6a280a7d5c1ef38c44d0d8c6d80ea"
+
+[[projects]]
   digest = "1:611cdcd3bd9781ebe9ea11d21edbb71528ad75bf3ff76fc41897f20b4c787d98"
   name = "github.com/jteeuwen/go-bindata"
   packages = [
@@ -401,6 +412,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:7bff42fbbef28d0ef60138c92cb3872cacb035133b3cfa39e3ff2c43f1fc332e"
+  name = "github.com/wadey/gocovmerge"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "b5bfa59ec0adc420475f97f89b58045c721d761c"
+
+[[projects]]
+  branch = "master"
   digest = "1:6f7f5a5452e6dc8b0665b0fd2b779c3c6b7e70a121e0661aeb03daef7baae58d"
   name = "github.com/zach-klippenstein/goregen"
   packages = ["."]
@@ -456,9 +475,12 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:1aae58d97a66dfc9cca57880841c2b274a570abf627b846e0b36c48d542e876c"
+  digest = "1:e03ee5b2dabb69f4a332d6c4458411cb956116caa5b7a5a06019cc2fe1eda3a7"
   name = "golang.org/x/tools"
-  packages = ["go/ast/astutil"]
+  packages = [
+    "cover",
+    "go/ast/astutil",
+  ]
   pruneopts = "UT"
   revision = "36c10c0a621fb2fede4686e8ae7bb1d900735d53"
 
@@ -490,6 +512,7 @@
     "github.com/fabric8-services/fabric8-auth/design",
     "github.com/fabric8-services/fabric8-common/auth",
     "github.com/fabric8-services/fabric8-common/auth/jwk",
+    "github.com/fabric8-services/fabric8-common/configuration",
     "github.com/fabric8-services/fabric8-common/errors",
     "github.com/fabric8-services/fabric8-common/goamiddleware",
     "github.com/fabric8-services/fabric8-common/goasupport",
@@ -517,6 +540,7 @@
     "github.com/goadesign/goa/middleware/security/jwt",
     "github.com/goadesign/goa/uuid",
     "github.com/gregjones/httpcache",
+    "github.com/jstemmer/go-junit-report",
     "github.com/jteeuwen/go-bindata/go-bindata",
     "github.com/magiconair/properties",
     "github.com/mattbaird/gochimp",
@@ -527,6 +551,8 @@
     "github.com/spf13/viper",
     "github.com/stretchr/testify/assert",
     "github.com/stretchr/testify/require",
+    "github.com/wadey/gocovmerge",
+    "golang.org/x/net/websocket",
     "gopkg.in/yaml.v2",
   ]
   solver-name = "gps-cdcl"

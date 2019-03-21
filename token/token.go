@@ -12,7 +12,7 @@ import (
 
 // tokenManagerConfiguration represents configuration needed to construct a token manager
 type tokenManagerConfiguration interface {
-	GetAuthURL() string
+	GetAuthServiceURL() string
 }
 
 type PublicKey struct {
@@ -37,7 +37,7 @@ func NewManager(config tokenManagerConfiguration) (Manager, error) {
 		publicKeysMap: map[string]*rsa.PublicKey{},
 	}
 
-	keysEndpoint := fmt.Sprintf("%s%s", config.GetAuthURL(), authservice.KeysTokenPath())
+	keysEndpoint := fmt.Sprintf("%s%s", config.GetAuthServiceURL(), authservice.KeysTokenPath())
 	remoteKeys, err := authjwk.FetchKeys(keysEndpoint)
 	if err != nil {
 		log.Error(nil, map[string]interface{}{
