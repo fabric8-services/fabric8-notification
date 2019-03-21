@@ -9,8 +9,8 @@ import (
 
 	"github.com/fabric8-services/fabric8-notification/app"
 	"github.com/fabric8-services/fabric8-notification/jsonapi"
-	"github.com/fabric8-services/fabric8-wit/errors"
-	"github.com/fabric8-services/fabric8-wit/resource"
+	"github.com/fabric8-services/fabric8-common/errors"
+	"github.com/fabric8-services/fabric8-common/resource"
 	errs "github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 )

@@ -4,9 +4,9 @@ import (
 	"crypto/rsa"
 	"fmt"
 
-	authjwk "github.com/fabric8-services/fabric8-auth/token/jwk"
+	authjwk "github.com/fabric8-services/fabric8-common/auth/jwk"
 	authservice "github.com/fabric8-services/fabric8-notification/auth/api"
-	"github.com/fabric8-services/fabric8-wit/log"
+	"github.com/fabric8-services/fabric8-common/log"
 	"github.com/pkg/errors"
 )
 

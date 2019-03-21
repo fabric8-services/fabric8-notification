@@ -20,8 +20,8 @@ import (
 	"github.com/fabric8-services/fabric8-notification/validator"
 	"github.com/fabric8-services/fabric8-notification/wit"
 
-	witmiddleware "github.com/fabric8-services/fabric8-wit/goamiddleware"
-	"github.com/fabric8-services/fabric8-wit/log"
+	witmiddleware "github.com/fabric8-services/fabric8-common/goamiddleware"
+	"github.com/fabric8-services/fabric8-common/log"
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
 	"github.com/goadesign/goa/middleware/gzip"

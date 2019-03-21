@@ -13,7 +13,7 @@ import (
 	"github.com/fabric8-services/fabric8-notification/testsupport"
 	"github.com/fabric8-services/fabric8-notification/wit"
 	witApi "github.com/fabric8-services/fabric8-notification/wit/api"
-	"github.com/fabric8-services/fabric8-wit/log"
+	"github.com/fabric8-services/fabric8-common/log"
 	"github.com/goadesign/goa/client"
 	"github.com/goadesign/goa/middleware"
 	"github.com/stretchr/testify/assert"
