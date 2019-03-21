@@ -200,12 +200,6 @@ CLEAN_TARGETS += clean-vendor
 clean-vendor:
 	-rm -rf $(VENDOR_DIR)
 
-CLEAN_TARGETS += clean-glide-cache
-.PHONY: clean-glide-cache
-## Removes the ./glide directory.
-clean-glide-cache:
-	-rm -rf ./.glide
-
 .PHONY: deps
 ## Download build dependencies.
 deps: $(DEP_BIN) $(VENDOR_DIR)
