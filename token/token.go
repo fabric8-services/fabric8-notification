@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	authjwk "github.com/fabric8-services/fabric8-common/auth/jwk"
-	authservice "github.com/fabric8-services/fabric8-notification/auth/api"
 	"github.com/fabric8-services/fabric8-common/log"
+	authservice "github.com/fabric8-services/fabric8-notification/auth/api"
 	"github.com/pkg/errors"
 )
 

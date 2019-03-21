@@ -276,12 +276,6 @@ prebuild-check: $(TMP_PATH) $(INSTALL_PREFIX) $(CHECK_GOPATH_BIN)
 ifndef GIT_BIN
 	$(error The "$(GIT_BIN_NAME)" executable could not be found in your PATH)
 endif
-ifndef GLIDE_BIN
-	$(error The "$(GLIDE_BIN_NAME)" executable could not be found in your PATH)
-endif
-ifndef HG_BIN
-	$(error The "$(HG_BIN_NAME)" executable could not be found in your PATH)
-endif
 	@$(CHECK_GOPATH_BIN) -packageName=$(PACKAGE_NAME) || (echo "Project lives in wrong location"; exit 1)
 
 $(CHECK_GOPATH_BIN): .make/check_gopath.go

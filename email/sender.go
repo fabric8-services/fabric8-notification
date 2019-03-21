@@ -3,8 +3,8 @@ package email
 import (
 	"context"
 
-	"github.com/fabric8-services/fabric8-notification/collector"
 	"github.com/fabric8-services/fabric8-common/log"
+	"github.com/fabric8-services/fabric8-notification/collector"
 	"github.com/mattbaird/gochimp"
 )
 
