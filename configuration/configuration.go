@@ -67,9 +67,6 @@ func GetData() (*Data, error) {
 }
 
 func (c *Data) setConfigDefaults() {
-	//---------
-	// Postgres
-	//---------
 	c.v.SetTypeByDefaultValue(true)
 
 	//-----
