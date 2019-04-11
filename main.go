@@ -102,7 +102,7 @@ func main() {
 	registry.Register(types.CommentCreate, collector.ConfiguredVars(config, collector.NewCommentResolver(authClient, witClient)), nil)
 	registry.Register(types.CommentUpdate, collector.ConfiguredVars(config, collector.NewCommentResolver(authClient, witClient)), nil)
 	registry.Register(types.UserEmailUpdate, collector.ConfiguredVars(config, collector.NewUserResolver(authClient)), validator.ValidateUser)
-	registry.Register(types.UserDeactivation, collector.ConfiguredVars(config, collector.NewUserResolver(authClient)), nil)
+	registry.Register(types.UserDeactivation, collector.ConfiguredVars(config, collector.NewUserResolver(authClient)), validator.ValidateUserDeactivation)
 	registry.Register(types.InvitationTeamNoorg, collector.ConfiguredVars(config, collector.NewUserResolver(authClient)), nil)
 	registry.Register(types.InvitationSpaceNoorg, collector.ConfiguredVars(config, collector.NewUserResolver(authClient)), nil)
 	registry.Register(types.AnalyticsNotifyCVE, collector.ConfiguredVars(config, collector.NewCVEResolver(authClient, witClient)), nil)
