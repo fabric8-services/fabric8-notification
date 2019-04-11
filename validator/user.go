@@ -15,12 +15,12 @@ func ValidateUser(context context.Context, custom map[string]interface{}) error 
 }
 
 func ValidateUserDeactivation(context context.Context, custom map[string]interface{}) error {
-	_, found := custom["expiryDate"]
-	if !found {
+	data, found := custom["expiryDate"]
+	if !found || data == "" {
 		return errors.NewBadParameterError("data.attributes.custom.expiryDate", "nil")
 	}
-	_, found = custom["userEmail"]
-	if !found {
+	data, found = custom["userEmail"]
+	if !found || data == "" {
 		return errors.NewBadParameterError("data.attributes.custom.userEmail", "nil")
 	}
 	return nil
