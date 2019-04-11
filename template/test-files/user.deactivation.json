@@ -1,0 +1,14 @@
+{
+  "data": {
+    "attributes": {
+      "custom": {
+        "expiryDate": "May 2, 2019",
+        "userEmail": "john-preview@example.com"
+      },
+      "id": "3383826c-51e4-401b-9ccd-b898f7e2397d",
+      "type": "user.deactivation"
+    },
+    "id": "4c34f6d4-f00b-487b-9a1f-e7d1adba6866",
+    "type": "notifications"
+  }
+}

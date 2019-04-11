@@ -346,6 +346,31 @@ func TestRenderVersion(t *testing.T) {
 	}
 }
 
+func TestRenderUserDeactivation(t *testing.T) {
+	files := []string{"user.deactivation"}
+	reg := template.AssetRegistry{}
+	template, exist := reg.Get(string(types.UserDeactivation))
+	assert.True(t, exist)
+
+	for _, file := range files {
+		t.Run(file, func(t *testing.T) {
+			vars := make(map[string]interface{})
+			payload, err := testsupport.GetFileContent(fmt.Sprintf("test-files/%s.json", file))
+			require.NoError(t, err)
+
+			vars["custom"] = testsupport.GetCustomElement(payload)
+
+			_, body, _, err := template.Render(addGlobalVars(vars))
+			require.NoError(t, err)
+
+			custom := toMap(vars["custom"])
+
+			assert.True(t, strings.Contains(body, toString(custom["expiryDate"])), "Body does not contains '%s' expiryDate", toString(custom["expiryDate"]))
+			assert.True(t, strings.Contains(body, toString(custom["userEmail"])), "Body does not contains '%s' userEmail", toString(custom["userEmail"]))
+		})
+	}
+}
+
 func checkCVEBody(t *testing.T, body string, custom map[string]interface{}) {
 	t.Helper()
 	assert.True(t, strings.Contains(body, toString(custom["repo_url"])))
