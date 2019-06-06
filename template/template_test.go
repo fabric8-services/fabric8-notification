@@ -21,8 +21,8 @@ import (
 )
 
 const (
-	OpenshiftIOAPI     = "http://api.openshift.io"
-	OpenShiftIOAuthAPI = "https://auth.openshift.io"
+	OpenshiftIOAPI     = "http://api.prod-preview.openshift.io"
+	OpenShiftIOAuthAPI = "https://auth.prod-preview.openshift.io"
 )
 
 func addGlobalVars(vars map[string]interface{}) map[string]interface{} {
@@ -56,178 +56,6 @@ func TestFalseOnMissingName(t *testing.T) {
 	assert.False(t, exist)
 }
 
-func TestRenderWorkitemCreate(t *testing.T) {
-	reg := template.AssetRegistry{}
-
-	temp, exist := reg.Get(string(types.WorkitemCreate))
-	assert.True(t, exist)
-
-	witClient, authClient := createClient(t)
-	wiID, _ := uuid.FromString("8bccc228-bba7-43ad-b077-15fbb9148f7f")
-	ctx := testsupport.CreateOSIOUserContext()
-	_, vars, err := collector.WorkItem(ctx, authClient, witClient, &testsupport.DummyCollaboratorCollector{}, wiID)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	subject, body, headers, err := temp.Render(addGlobalVars(vars))
-	require.NoError(t, err)
-	assert.True(t, strings.Contains(subject, "[openshiftio/openshiftio]"))
-	assert.True(t, strings.Contains(subject, "[Scenario]"))
-
-	assert.Contains(t, headers, "Message-ID")
-	assert.Contains(t, headers, "X-OSIO-Space")
-	assert.Contains(t, headers, "X-OSIO-Area")
-
-	assert.True(t, strings.Contains(body, "http://localhost/openshiftio/openshiftio/plan/detail/1343"))
-	assert.True(t, strings.Contains(body, "OpenShift io"))
-	assert.True(t, strings.Contains(body, "1343"))
-	assert.True(t, strings.Contains(body, "mode under Backlog")) // part of the Description. Might change since we're on live data
-	assert.True(t, strings.Contains(body, "/openshiftio"))       // Space/Area tag. Might change since we're on live data
-
-	/*
-		ioutil.WriteFile("../test.html", []byte(body), os.FileMode(0777))
-	*/
-}
-
-func TestRenderWorkitemCreateMissingDescription(t *testing.T) {
-	reg := template.AssetRegistry{}
-
-	temp, exist := reg.Get(string(types.WorkitemCreate))
-	assert.True(t, exist)
-
-	witClient, authClient := createClient(t)
-	wiID, _ := uuid.FromString("8bccc228-bba7-43ad-b077-15fbb9148f7f")
-	ctx := testsupport.CreateOSIOUserContext()
-	_, vars, err := collector.WorkItem(ctx, authClient, witClient, &testsupport.DummyCollaboratorCollector{}, wiID)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	wi := vars["workitem"].(*witApi.WorkItemSingle)
-	delete(wi.Data.Attributes, "system.description")
-	delete(wi.Data.Attributes, "system.description.rendered")
-	delete(wi.Data.Attributes, "system.description.markup")
-
-	subject, body, headers, err := temp.Render(addGlobalVars(vars))
-	require.NoError(t, err)
-	assert.True(t, strings.Contains(subject, "[openshiftio/openshiftio]"))
-	assert.True(t, strings.Contains(subject, "[Scenario]"))
-
-	assert.Contains(t, headers, "Message-ID")
-	assert.Contains(t, headers, "X-OSIO-Space")
-	assert.Contains(t, headers, "X-OSIO-Area")
-
-	assert.True(t, strings.Contains(body, "http://localhost/openshiftio/openshiftio/plan/detail/1343"))
-	assert.True(t, strings.Contains(body, "OpenShift io"))
-	assert.True(t, strings.Contains(body, "1343"))
-
-	/*
-		ioutil.WriteFile("../test.html", []byte(body), os.FileMode(0777))
-	*/
-}
-
-func TestRenderWorkitemUpdate(t *testing.T) {
-	reg := template.AssetRegistry{}
-
-	temp, exist := reg.Get(string(types.WorkitemUpdate))
-	assert.True(t, exist)
-
-	witClient, authClient := createClient(t)
-	wiID, _ := uuid.FromString("8bccc228-bba7-43ad-b077-15fbb9148f7f")
-
-	_, vars, err := collector.WorkItem(context.Background(), authClient, witClient, &testsupport.DummyCollaboratorCollector{}, wiID)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	subject, body, headers, err := temp.Render(addGlobalVars(vars))
-	require.NoError(t, err)
-
-	assert.True(t, strings.Contains(subject, "[openshiftio/openshiftio]"))
-	assert.True(t, strings.Contains(subject, "[Scenario]"))
-
-	assert.Contains(t, headers, "In-Reply-To")
-	assert.Contains(t, headers, "References")
-	assert.Contains(t, headers, "X-OSIO-Space")
-	assert.Contains(t, headers, "X-OSIO-Area")
-
-	assert.True(t, strings.Contains(body, "http://localhost/openshiftio/openshiftio/plan/detail/1343"))
-	assert.True(t, strings.Contains(body, "1343"))
-
-	/*
-		ioutil.WriteFile("../test.html", []byte(body), os.FileMode(0777))
-	*/
-}
-
-func TestRenderCommentCreate(t *testing.T) {
-	reg := template.AssetRegistry{}
-
-	temp, exist := reg.Get(string(types.CommentCreate))
-	assert.True(t, exist)
-
-	witClient, authClient := createClient(t)
-	ciID, _ := uuid.FromString("5e7c1da9-af62-4b73-b18a-e88b7a6b9054")
-
-	_, vars, err := collector.Comment(context.Background(), authClient, witClient, &testsupport.DummyCollaboratorCollector{}, ciID)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	subject, body, headers, err := temp.Render(addGlobalVars(vars))
-	require.NoError(t, err)
-
-	assert.True(t, strings.Contains(subject, "[openshiftio/openshiftio]"))
-	assert.True(t, strings.Contains(subject, "[Scenario]"))
-
-	assert.Contains(t, headers, "In-Reply-To")
-	assert.Contains(t, headers, "References")
-	assert.Contains(t, headers, "X-OSIO-Space")
-	assert.Contains(t, headers, "X-OSIO-Area")
-
-	assert.True(t, strings.Contains(body, "http://localhost/openshiftio/openshiftio/plan/detail/1343"))
-	assert.True(t, strings.Contains(body, "1343"))
-	assert.True(t, strings.Contains(body, "just shows loading animation,")) // part of the msg
-
-	/*
-		ioutil.WriteFile("../test.html", []byte(body), os.FileMode(0777))
-	*/
-}
-
-func TestRenderCommentUpdate(t *testing.T) {
-	reg := template.AssetRegistry{}
-
-	temp, exist := reg.Get(string(types.CommentUpdate))
-	assert.True(t, exist)
-
-	witClient, authClient := createClient(t)
-	ciID, _ := uuid.FromString("5e7c1da9-af62-4b73-b18a-e88b7a6b9054")
-
-	_, vars, err := collector.Comment(context.Background(), authClient, witClient, &testsupport.DummyCollaboratorCollector{}, ciID)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	subject, body, headers, err := temp.Render(addGlobalVars(vars))
-	require.NoError(t, err)
-
-	assert.True(t, strings.Contains(subject, "[openshiftio/openshiftio]"))
-	assert.True(t, strings.Contains(subject, "[Scenario]"))
-
-	assert.Contains(t, headers, "In-Reply-To")
-	assert.Contains(t, headers, "References")
-	assert.Contains(t, headers, "X-OSIO-Space")
-	assert.Contains(t, headers, "X-OSIO-Area")
-
-	assert.True(t, strings.Contains(body, "http://localhost/openshiftio/openshiftio/plan/detail/1343"))
-	assert.True(t, strings.Contains(body, "1343"))
-	assert.True(t, strings.Contains(body, "just shows loading animation,")) // part of the ms
-
-	/*
-		ioutil.WriteFile("../test.html", []byte(body), os.FileMode(0777))
-	*/
-}
-
 func TestRenderEmailUpdate(t *testing.T) {
 	reg := template.AssetRegistry{}
 
@@ -235,7 +63,7 @@ func TestRenderEmailUpdate(t *testing.T) {
 	assert.True(t, exist)
 
 	_, authClient := createClient(t)
-	ciID, _ := uuid.FromString("5e7c1da9-af62-4b73-b18a-e88b7a6b9054")
+	ciID, _ := uuid.FromString("1a3496ca-edc0-42f7-958f-ba02ed3ef54d")
 
 	_, vars, err := collector.User(context.Background(), authClient, ciID)
 	if err != nil {
@@ -251,50 +79,6 @@ func TestRenderEmailUpdate(t *testing.T) {
 	_, body, _, err := temp.Render(addGlobalVars(vars))
 	require.NoError(t, err)
 	assert.True(t, strings.Contains(body, "https://verift.url.openshift.io"))
-}
-
-func TestRenderInvitationSpaceNoorg(t *testing.T) {
-	reg := template.AssetRegistry{}
-
-	template, exist := reg.Get(string(types.InvitationSpaceNoorg))
-	assert.True(t, exist)
-
-	vars := map[string]interface{}{}
-	vars["custom"] = map[string]interface{}{
-		"inviter":   "John Smith",
-		"spaceName": "Customer Orders",
-		"roleNames": "Contributor, Project Lead",
-		"acceptURL": "http://openshift.io/invitations/accept/12345-ABCDE-FFFFF-99999-88888",
-	}
-
-	_, body, _, err := template.Render(addGlobalVars(vars))
-	require.NoError(t, err)
-
-	assert.True(t, strings.Contains(body, "http://openshift.io/invitations/accept/12345-ABCDE-FFFFF-99999-88888"))
-
-	//ioutil.WriteFile("../invitation-space.html", []byte(body), os.FileMode(0777))
-}
-
-func TestRenderInvitationTeamNoorg(t *testing.T) {
-	reg := template.AssetRegistry{}
-
-	template, exist := reg.Get(string(types.InvitationTeamNoorg))
-	assert.True(t, exist)
-
-	vars := map[string]interface{}{}
-	vars["custom"] = map[string]interface{}{
-		"teamName":  "Developers",
-		"inviter":   "John Smith",
-		"spaceName": "Financial Backend",
-		"acceptURL": "http://openshift.io/invitations/accept/12345-ABCDE-FFFFF-99999-77777",
-	}
-
-	_, body, _, err := template.Render(addGlobalVars(vars))
-	require.NoError(t, err)
-
-	assert.True(t, strings.Contains(body, "http://openshift.io/invitations/accept/12345-ABCDE-FFFFF-99999-77777"))
-
-	//ioutil.WriteFile("../invitation-team.html", []byte(body), os.FileMode(0777))
 }
 
 func TestRenderCVE(t *testing.T) {
